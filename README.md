@@ -1,50 +1,28 @@
-# React + TypeScript + Vite
+# Well Pulse
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+*Work in progress*
 
-Currently, two official plugins are available:
+WellPulse is a web application designed to help users track their healthy habits and wellness journey. Built with **React**, **Node.js**, **MongoDB**, **Tailwind CSS**, and other modern technologies, WellPulse provides users with interactive tools to log activities, visualize progress, and stay motivated.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The application will allow users to monitor their health through various features like a **calendar**, **map**, and **charts**, all while leveraging the power of **MongoDB** for efficient data management and **Tailwind CSS** for a clean, responsive design.
 
-## Expanding the ESLint configuration
+## Features (Planned)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+- **Interactive Calendar**: Easily manage and track your healthy habits by adding them to a daily calendar.
+- **Health-Tracking Map**: Log locations and track physical activities using an interactive map.
+- **Progress Charts**: Visualize your progress and habits over time with dynamic charts powered by **Chart.js**.
+- **MongoDB Integration**: Store and manage user data securely and efficiently with a **MongoDB** database.
+- **Responsive Design**: The app is built with **Tailwind CSS**, ensuring a sleek, mobile-friendly design that looks great on all devices.
 
-- Configure the top-level `parserOptions` property like this:
+## Current Status
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+WellPulse is in active development. Features like the calendar, map, and charts are being built incrementally. The goal is to create a seamless experience for users to track their habits and monitor their wellness.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Technologies Used
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- **React**: For building a dynamic and responsive frontend.
+- **Node.js**: Backend API to handle user data and application logic.
+- **MongoDB**: NoSQL database for flexible and scalable data storage.
+- **Tailwind CSS**: A utility-first CSS framework to create custom, responsive designs.
+- **Chart.js**: JavaScript library to create interactive and visually appealing charts.
+  
