@@ -9,11 +9,20 @@ export default {
       fontFamily: {
         'roboto': ['Roboto', 'sans-serif'],
       },
-      colors : {
+      colors: {
         green: '#2E7D32',
-        lightGrey: '#E0E0E0',
-        darkGrey: '#757575'
-      }
+        'light-grey': '#E0E0E0',
+        'dark-grey': '#757575'
+      },
+      animation: {
+        pulse: "pulse 1s infinite",
+      },
+      keyframes: {
+        pulse: {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.1)" },
+        },
+      },
     },
   },
   plugins: [],
