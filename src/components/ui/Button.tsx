@@ -3,10 +3,17 @@ interface ButtonProps {
   textSize: "text-md" | "text-lg";
   buttonSize: "sm" | "lg";
   type: "primary" | "secondary";
+  handleClick: () => void;
 }
 
-const Button = ({ children, textSize, buttonSize, type }: ButtonProps) => {
-  const basicButtonStyles = "rounded-md shadow hover:animate-pulse";
+const Button = ({
+  children,
+  textSize,
+  buttonSize,
+  type,
+  handleClick,
+}: ButtonProps) => {
+  const basicButtonStyles = "rounded-md shadow outline-0 hover:animate-pulse";
   let btnSize;
 
   if (buttonSize === "sm") {
@@ -18,6 +25,7 @@ const Button = ({ children, textSize, buttonSize, type }: ButtonProps) => {
   if (type === "primary") {
     return (
       <button
+        onClick={handleClick}
         className={`text-white bg-green ${btnSize} ${textSize} ${basicButtonStyles} `}
       >
         {children}
@@ -28,6 +36,7 @@ const Button = ({ children, textSize, buttonSize, type }: ButtonProps) => {
   if (type === "secondary") {
     return (
       <button
+        onClick={handleClick}
         className={`border border-green text-green ${btnSize} ${textSize} ${basicButtonStyles}`}
       >
         {children}
