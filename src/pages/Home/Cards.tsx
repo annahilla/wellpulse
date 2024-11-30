@@ -9,21 +9,21 @@ const Cards = () => {
       <div className="my-10 grid grid-cols-1 gap-10 mx-auto text-center md:grid-cols-3 xl:w-4/5">
         <Card
           page="/calendar"
-          icon={<CiCalendar />}
+          icon={<CiCalendar color="#FFC107" />}
           title="Calendar Integration"
           text="Plan and manage your habits with an intuitive calendar that syncs
               seamlessly with your routine."
         />
         <Card
           page="/map"
-          icon={<CiLocationOn />}
+          icon={<CiLocationOn color="#0288D1" />}
           title="Interactive Map"
           text="Explore nearby healthy locations and customize your search with
               filters to find exactly what you need."
         />
         <Card
           page="/progress"
-          icon={<PiChartPieSliceThin />}
+          icon={<PiChartPieSliceThin color="#FF9800" />}
           title="Progress Charts"
           text="Visualize your progress and stay motivated with clear and dynamic
               insights into your achievements."

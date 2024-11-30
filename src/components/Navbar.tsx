@@ -1,15 +1,27 @@
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import Button from "./ui/Button";
 import logo from "../assets/logo.png";
 import NavItem from "./ui/NavItem";
 import { AiOutlineMenu } from "react-icons/ai";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
+import { logoutUser } from "../redux/authActions";
 
 const Navbar = () => {
+  const isLoggedIn = useSelector(
+    (state: RootState) => state.user.isAuthenticated
+  );
+  const dispatch = useDispatch<AppDispatch>();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleLogout = () => {
+    dispatch(logoutUser());
   };
 
   return (
@@ -29,23 +41,48 @@ const Navbar = () => {
             isMenuOpen ? "block" : "hidden"
           } flex py-10 absolute uppercase top-20 left-0 bg-white w-full flex-col justify-between items-center gap-10 md:bg-transparent md:py-0 md:w-auto md:flex md:flex-row xl:gap-20 md:relative md:top-0 md:left-0`}
         >
-          <li className="cursor-pointer hover:animate-pulse">
-            <NavItem to="/map">Map</NavItem>
-          </li>
-          <li className="cursor-pointer hover:animate-pulse">
-            <NavItem to="/calendar">Calendar</NavItem>
-          </li>
-          <li className="cursor-pointer hover:animate-pulse">
-            <NavItem to="/progress">Progress</NavItem>
-          </li>
-          <li className="flex items-center justify-between gap-5 md">
-            <Button type="primary" buttonSize="sm" textSize="text-md">
-              Log In
-            </Button>
-            <Button type="secondary" buttonSize="sm" textSize="text-md">
-              Sign Up
-            </Button>
-          </li>
+          {isLoggedIn ? (
+            <>
+              <li className="cursor-pointer hover:animate-pulse">
+                <NavItem to="/map">Map</NavItem>
+              </li>
+              <li className="cursor-pointer hover:animate-pulse">
+                <NavItem to="/calendar">Calendar</NavItem>
+              </li>
+              <li className="cursor-pointer hover:animate-pulse">
+                <NavItem to="/progress">Progress</NavItem>
+              </li>
+              <li className="cursor-pointer hover:animate-pulse">
+                <Button
+                  handleClick={handleLogout}
+                  buttonSize="sm"
+                  textSize="text-md"
+                  type="secondary"
+                >
+                  Log Out
+                </Button>
+              </li>
+            </>
+          ) : (
+            <li className="flex items-center justify-between gap-5 md">
+              <Button
+                handleClick={() => navigate("/login")}
+                type="primary"
+                buttonSize="sm"
+                textSize="text-md"
+              >
+                Log In
+              </Button>
+              <Button
+                handleClick={() => navigate("/signup")}
+                type="secondary"
+                buttonSize="sm"
+                textSize="text-md"
+              >
+                Sign Up
+              </Button>
+            </li>
+          )}
         </ul>
       </div>
     </nav>

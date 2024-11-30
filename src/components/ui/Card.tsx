@@ -18,7 +18,7 @@ const Card = ({ title, text, icon, page }: CardProps) => {
 
   return (
     <div className="px-7 py-10 shadow-lg rounded-lg">
-      <div className="flex justify-center my-6 text-9xl text-green">{icon}</div>
+      <div className="flex justify-center my-6 text-9xl">{icon}</div>
       <h3 className="text-2xl font-bold">{title}</h3>
       <p className="my-8">{text}</p>
       <Button

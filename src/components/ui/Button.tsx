@@ -3,7 +3,7 @@ interface ButtonProps {
   textSize: "text-md" | "text-lg";
   buttonSize: "sm" | "lg";
   type: "primary" | "secondary";
-  handleClick: () => void;
+  handleClick?: () => void;
 }
 
 const Button = ({
