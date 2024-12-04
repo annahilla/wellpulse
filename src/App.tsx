@@ -10,6 +10,7 @@ import AuthLayout from "./layouts/AuthLayout";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
+import HabitsPage from "./pages/HabitsPage";
 
 function App() {
   const isLoggedIn = useSelector(
@@ -25,6 +26,7 @@ function App() {
             <ProtectedRoute canActivate={isLoggedIn} redirectPath="/login" />
           }
         >
+          <Route path="habits" element={<HabitsPage />} />
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="map" element={<MapPage />} />
           <Route path="progress" element={<ProgressPage />} />
