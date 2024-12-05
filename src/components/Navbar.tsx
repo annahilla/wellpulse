@@ -22,6 +22,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
+    navigate("/")
   };
 
   return (
@@ -44,13 +45,13 @@ const Navbar = () => {
           {isLoggedIn ? (
             <>
               <li className="cursor-pointer hover:animate-pulse">
+                <NavItem to="/calendar">Calendar</NavItem>
+              </li>
+              <li className="cursor-pointer hover:animate-pulse">
                 <NavItem to="/habits">Habits</NavItem>
               </li>
               <li className="cursor-pointer hover:animate-pulse">
                 <NavItem to="/map">Map</NavItem>
-              </li>
-              <li className="cursor-pointer hover:animate-pulse">
-                <NavItem to="/calendar">Calendar</NavItem>
               </li>
               <li className="cursor-pointer hover:animate-pulse">
                 <NavItem to="/progress">Progress</NavItem>

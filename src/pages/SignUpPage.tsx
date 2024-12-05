@@ -1,6 +1,6 @@
 import Button from "../components/ui/Button";
 import logo from "../assets/logo.png";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { FormEvent, useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,12 +15,23 @@ const SignUpPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const location = useLocation();
+  const isLoggedIn = useSelector(
+    (state: RootState) => state.user.isAuthenticated
+  );
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const redirectTo = location.state?.from?.pathname || "/calendar";
+      navigate(redirectTo, { replace: true });
+    }
+  }, [isLoggedIn]);
 
   const handleSignUp = async (e: FormEvent) => {
     e.preventDefault();
     try {
       await dispatch(signUpUser({ email, password })).unwrap();
-      navigate("/");
+      navigate("/calendar");
     } catch (err) {
       console.error("Error during sign up:", err);
     }

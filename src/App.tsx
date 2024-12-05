@@ -26,15 +26,15 @@ function App() {
             <ProtectedRoute canActivate={isLoggedIn} redirectPath="/login" />
           }
         >
-          <Route path="habits" element={<HabitsPage />} />
-          <Route path="calendar" element={<CalendarPage />} />
-          <Route path="map" element={<MapPage />} />
-          <Route path="progress" element={<ProgressPage />} />
+          <Route path="/habits" element={<HabitsPage />} />
+          <Route path="/calendar" element={<CalendarPage />} />
+          <Route path="/map" element={<MapPage />} />
+          <Route path="/progress" element={<ProgressPage />} />
         </Route>
       </Route>
       <Route element={<AuthLayout />}>
-        <Route path="signup" element={<SignUpPage />} />
-        <Route path="login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/login" element={<LoginPage />} />
       </Route>
     </Routes>
   );

@@ -1,11 +1,11 @@
 import Button from "../components/ui/Button";
 import logo from "../assets/logo.png";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { FcGoogle } from "react-icons/fc";
 import { FormEvent, useEffect, useState } from "react";
 import { loginUser, loginUserWithGoogle } from "../redux/authActions";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
 import { setError } from "../redux/userSlice";
 
 const LoginPage = () => {
@@ -13,12 +13,22 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const location = useLocation();
+  const isLoggedIn = useSelector(
+    (state: RootState) => state.user.isAuthenticated
+  );
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      const redirectTo = location.state?.from?.pathname || "/calendar";
+      navigate(redirectTo, { replace: true });
+    }
+  }, [isLoggedIn]);
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     try {
       await dispatch(loginUser({ email, password })).unwrap();
-      navigate("/");
     } catch (err) {
       console.error("Error during sign up:", err);
     }
