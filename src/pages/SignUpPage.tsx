@@ -78,7 +78,7 @@ const SignUpPage = () => {
             value={password}
           />
         </div>
-        <Button type="primary" textSize="text-md" buttonSize="sm">
+        <Button type="primary" textSize="text-md" size="sm">
           Sign Up
         </Button>
         <button

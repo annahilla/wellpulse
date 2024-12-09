@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router";
 import MainLayout from "./layouts/MainLayout";
 import HomePage from "./pages/Home";
-import CalendarPage from "./pages/CalendarPage";
+import CalendarPage from "./pages/Calendar";
 import MapPage from "./pages/MapPage";
 import ProgressPage from "./pages/ProgressPage";
 import SignUpPage from "./pages/SignUpPage";

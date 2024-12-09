@@ -23,7 +23,7 @@ const Card = ({ title, text, icon, page }: CardProps) => {
       <p className="my-8">{text}</p>
       <Button
         handleClick={() => handleNavigate(page)}
-        buttonSize="sm"
+        size="sm"
         type="secondary"
         textSize="text-md"
       >

@@ -59,7 +59,7 @@ const Navbar = () => {
               <li className="cursor-pointer hover:animate-pulse">
                 <Button
                   handleClick={handleLogout}
-                  buttonSize="sm"
+                  size="sm"
                   textSize="text-md"
                   type="secondary"
                 >
@@ -72,7 +72,7 @@ const Navbar = () => {
               <Button
                 handleClick={() => navigate("/login")}
                 type="primary"
-                buttonSize="sm"
+                size="sm"
                 textSize="text-md"
               >
                 Log In
@@ -80,7 +80,7 @@ const Navbar = () => {
               <Button
                 handleClick={() => navigate("/signup")}
                 type="secondary"
-                buttonSize="sm"
+                size="sm"
                 textSize="text-md"
               >
                 Sign Up

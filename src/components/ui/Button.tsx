@@ -1,7 +1,7 @@
 interface ButtonProps {
   children: React.ReactNode;
   textSize: "text-md" | "text-lg";
-  buttonSize: "sm" | "lg";
+  size: "sm" | "lg";
   type: "primary" | "secondary";
   handleClick?: () => void;
 }
@@ -9,16 +9,16 @@ interface ButtonProps {
 const Button = ({
   children,
   textSize,
-  buttonSize,
+  size,
   type,
   handleClick,
 }: ButtonProps) => {
   const basicButtonStyles = "rounded-md shadow outline-0 hover:animate-pulse";
   let btnSize;
 
-  if (buttonSize === "sm") {
+  if (size === "sm") {
     btnSize = "px-4 py-2";
-  } else if (buttonSize === "lg") {
+  } else if (size === "lg") {
     btnSize = "px-7 py-4";
   }
 

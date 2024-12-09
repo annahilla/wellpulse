@@ -18,7 +18,7 @@ const Hero = () => {
       <Button
         handleClick={() => navigate("/signup")}
         type="primary"
-        buttonSize="lg"
+        size="lg"
         textSize="text-lg"
       >
         Start Now
