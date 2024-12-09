@@ -37,7 +37,6 @@ const LoginPage = () => {
   const handleGoogleSignIn = async () => {
     try {
       await dispatch(loginUserWithGoogle()).unwrap();
-      navigate("/");
     } catch (err) {
       console.error("Error during Google sign-in:", err);
     }

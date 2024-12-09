@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { createUserWithEmailAndPassword, getAuth, getRedirectResult, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signInWithRedirect, signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import { setUser, setError, logout } from "./userSlice";
 
@@ -42,7 +42,7 @@ export const loginUserWithGoogle = createAsyncThunk(
   async (_, thunkAPI) => {
     const provider = new GoogleAuthProvider();
     try {
-      const result = await signInWithPopup(getAuth(), provider);
+      const result = await signInWithPopup(auth, provider);
       const user = result.user;
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const token = credential?.accessToken;
