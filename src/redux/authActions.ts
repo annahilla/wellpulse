@@ -1,7 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup, signOut } from "firebase/auth";
 import { auth } from "../firebaseConfig";
-import { setUser, setError, logout } from "./userSlice";
+import { setUser, setError, logout } from "./authSlice";
+import { RootState } from "./store";
+import { sendTokenToBackend } from "../utils/sendTokenToBackend";
 
 interface User {
   email:string;
@@ -20,7 +22,8 @@ export const loginUser = createAsyncThunk(
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      const userData = { email: user.email! };
+      const token = await user.getIdToken();
+      const userData = { email: user.email!, token };
       thunkAPI.dispatch(setUser(userData));
       return userData;
     } catch (error: any) {
@@ -44,8 +47,7 @@ export const loginUserWithGoogle = createAsyncThunk(
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential?.accessToken;
+      const token = await user.getIdToken();
       
       if (user && token) {
         const userData = { email: user.email!, token };
@@ -64,8 +66,6 @@ export const loginUserWithGoogle = createAsyncThunk(
   }
 );
 
-
-
 export const signUpUser = createAsyncThunk(
   "auth/signUpUser",
   async (
@@ -79,9 +79,12 @@ export const signUpUser = createAsyncThunk(
     
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const userEmail = userCredential.user.email || "";
+      const user = userCredential.user;
+      const token = await user.getIdToken();
+      const userData = { email: user.email!, token };
       
-      thunkAPI.dispatch(setUser({ email: userEmail }));
+      thunkAPI.dispatch(setUser(userData));
+      return userData;
     } catch (error: any) {
       if (error.code === "auth/email-already-in-use") {
         const errorMessage = "This email is already in use.";
@@ -112,6 +115,29 @@ export const logoutUser = createAsyncThunk(
       thunkAPI.dispatch(logout());
     } catch (error: any) {
       thunkAPI.dispatch(setError(error.message));
+    }
+  }
+);
+
+export const sendUserToken = createAsyncThunk(
+  'auth/sendUserToken',
+  async (_, thunkAPI) => {
+    const state = thunkAPI.getState() as RootState;
+    const token = state.user.token;
+
+    if (!token) {
+      const errorMessage = 'No token available for authentication.';
+      thunkAPI.dispatch(setError(errorMessage));
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+
+    try {
+      const response = await sendTokenToBackend(token);  
+      return response;
+    } catch (error) {
+      const errorMessage = 'Failed to send token to the backend.';
+      thunkAPI.dispatch(setError(errorMessage));
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   }
 );

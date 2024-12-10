@@ -6,7 +6,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { loginUser, loginUserWithGoogle } from "../redux/authActions";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
-import { setError } from "../redux/userSlice";
+import { setError } from "../redux/authSlice";
 
 const LoginPage = () => {
   const dispatch = useDispatch<AppDispatch>();

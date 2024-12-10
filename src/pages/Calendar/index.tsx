@@ -7,6 +7,10 @@ import Button from "../../components/ui/Button";
 import Modal from "../../components/ui/Modal";
 import { FormEvent, useEffect, useState } from "react";
 import { Habit } from "../../types/types";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../redux/store";
+import { addHabit } from "../../redux/habitsSlice";
+import { getHabits } from "../../redux/habitsActions";
 
 const CalendarPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,11 +25,15 @@ const CalendarPage = () => {
         duration: 1,
     });
 
-    const closeModal = () => setIsModalOpen(false);
+    const token = useSelector((state: RootState) => state.user.token)
+    const habits = useSelector((state: RootState) => state.habits.habits);
+    console.log(habits)
+    
+    const dispatch = useDispatch<AppDispatch>();
 
-    const openModal = () => {
-        setIsModalOpen(true);
-    };
+    const closeModal = () => setIsModalOpen(false);
+    const openModal = () => setIsModalOpen(true);
+    
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -52,8 +60,14 @@ const CalendarPage = () => {
             }
         };
 
+        if (token) {
+            dispatch(getHabits()); 
+        }
+
         fetchCategories();
         fetchFrequencies();
+
+    
     }, []);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -65,9 +79,15 @@ const CalendarPage = () => {
         }));
     };
 
-    const createHabit = (event: FormEvent<HTMLFormElement>) => {
+    const createHabit = async  (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        try {
+            dispatch(addHabit(newHabit));
+            closeModal();
+        } catch(err) {
+            console.error("User not authenticated. Please log in.");
+        }
 
         console.log('Form data submitted: ', newHabit);
     }

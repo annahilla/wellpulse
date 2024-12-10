@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router";
 import { FormEvent, useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
-import { setError } from "../redux/userSlice.ts";
+import { setError } from "../redux/authSlice.ts";
 import { loginUserWithGoogle, signUpUser } from "../redux/authActions.ts";
 import { AppDispatch, RootState } from "../redux/store.ts";
 import { IoIosAlert } from "react-icons/io";
