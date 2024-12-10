@@ -36,6 +36,7 @@ const Button = ({
   if (type === "secondary") {
     return (
       <button
+      type={handleClick ? "button" : "submit"}
         onClick={handleClick}
         className={`border border-green text-green ${btnSize} ${textSize} ${basicButtonStyles}`}
       >

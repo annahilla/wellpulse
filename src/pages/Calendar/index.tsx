@@ -5,14 +5,21 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import { EventContentArg, EventInput } from "@fullcalendar/core/index.js";
 import Button from "../../components/ui/Button";
 import Modal from "../../components/ui/Modal";
-import { useEffect, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
+import { Habit } from "../../types/types";
 
 const CalendarPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [events, setEvents] = useState<EventInput[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
     const [frequencies, setFrequencies] = useState<string[]>([]);
-
+    const [newHabit, setNewHabit] = useState<Habit>({
+        name: '',
+        category: 'Sports',
+        frequency: 'Daily',
+        timeOfDay: '',
+        duration: 1,
+    });
 
     const closeModal = () => setIsModalOpen(false);
 
@@ -48,6 +55,22 @@ const CalendarPage = () => {
         fetchCategories();
         fetchFrequencies();
     }, []);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        
+        setNewHabit((prevHabit) => ({
+            ...prevHabit,
+            [name]: value,
+        }));
+    };
+
+    const createHabit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+
+        console.log('Form data submitted: ', newHabit);
+    }
     
     const handleDateClick = (arg: any) => {
         let title = prompt('Please enter a new title for your event')
@@ -92,14 +115,14 @@ const CalendarPage = () => {
             </div>
             <Modal isOpen={isModalOpen} closeModal={closeModal}>
                 <h3 className="text-2xl font-bold mb-4">Add a new habit</h3>
-                <form className="flex flex-col gap-5 my-6">
+                <form onSubmit={createHabit} className="flex flex-col gap-5 my-6">
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="habit">What habit do you want to incorporate?</label>
-                        <input className="px-5 py-2 rounded border border-neutral-200" type="text" name="habit" placeholder="Morning Walk" />
+                        <label htmlFor="name">What habit do you want to incorporate?</label>
+                        <input onChange={handleInputChange} className="px-5 py-2 rounded border border-neutral-200" type="text" name="name" placeholder="Morning Walk" value={newHabit.name} />
                     </div>
                     <div className="flex flex-col gap-2">
                         <label htmlFor="category">What category does this habit belong to?</label>
-                        <select className="px-5 py-2 rounded border border-neutral-200" name="category">
+                        <select onChange={handleInputChange} className="px-5 py-2 rounded border border-neutral-200" name="category" value={newHabit.category}>
                             {
                                 categories.length > 0 && categories.map(category => (
                                     <option key={category} value={category}>{category}</option>
@@ -108,9 +131,9 @@ const CalendarPage = () => {
                         </select>
                     </div>
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="category">How often would you like to do it?</label>
-                        <select className="px-5 py-2 rounded border border-neutral-200" name="frequency">
-                        {
+                        <label htmlFor="frequency">How often would you like to do it?</label>
+                        <select onChange={handleInputChange} className="px-5 py-2 rounded border border-neutral-200" name="frequency" value={newHabit.frequency}>
+                            {
                                 frequencies.length > 0 && frequencies.map(frequency => (
                                     <option key={frequency} value={frequency}>{frequency}</option>
                                 ))
@@ -118,13 +141,13 @@ const CalendarPage = () => {
                         </select>
                     </div>
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="category">When during the day would you like to do it?</label>
-                        <input className="px-5 py-2 rounded border border-neutral-200" name="timeOfDay" type="time" />
+                        <label htmlFor="timeOfDay">When during the day would you like to do it?</label>
+                        <input onChange={handleInputChange} className="px-5 py-2 rounded border border-neutral-200" name="timeOfDay" type="time" value={newHabit.timeOfDay}/>
                     </div>
                     <div className="flex flex-col gap-2">
-                        <label htmlFor="category">How much time in minutes would you spend on this habit?</label>
+                        <label htmlFor="duration">How much time in minutes would you spend on this habit?</label>
                         <div className="relative flex items-center rounded border border-neutral-200">
-                            <input className="px-5 py-2" name="duration" type="number" placeholder="30" />
+                            <input onChange={handleInputChange} className="px-5 py-2" name="duration" type="number" placeholder="30" value={newHabit.duration}/>
                             <span className="absolute text-sm right-0 px-5 py-2 border-l">minutes</span>
                         </div>
                     </div>
