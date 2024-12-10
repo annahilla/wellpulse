@@ -1,16 +1,16 @@
 import { useEffect, useRef } from "react";
 
+interface ModalProps {
+  isOpen: boolean;
+  closeModal: () => void;
+  children: React.ReactNode
+}
+
 const Modal = ({
   isOpen,
   closeModal,
-  title,
-  text,
-}: {
-  isOpen: boolean;
-  closeModal: () => void;
-  title: string;
-  text: string;
-}) => {
+  children
+}: ModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -36,8 +36,7 @@ const Modal = ({
           ref={modalRef}
           className="bg-white p-20 w-1/2 rounded-xl flex flex-col items-center justify-center"
         >
-          <h5 className="font-bold text-2xl mb-8 text-center">{title}</h5>
-          <p className="text-xl font-light">{text}</p>
+          { children }
         </div>
       </div>
     )
