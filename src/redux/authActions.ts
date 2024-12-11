@@ -48,16 +48,9 @@ export const loginUserWithGoogle = createAsyncThunk(
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       const token = await user.getIdToken();
-      
-      if (user && token) {
-        const userData = { email: user.email!, token };
-        thunkAPI.dispatch(setUser(userData));
-        return userData;
-      } else {
-        const errorMessage = "No user returned from Google login.";
-        thunkAPI.dispatch(setError(errorMessage));
-        return thunkAPI.rejectWithValue(errorMessage);
-      }
+      const userData = { email: user.email!, token };
+      thunkAPI.dispatch(setUser(userData));
+      return userData;
     } catch (error) {
       const errorMessage = "Error during Google login.";
       thunkAPI.dispatch(setError(errorMessage));

@@ -4,4 +4,5 @@ export interface Habit {
     frequency: 'Daily' | 'Weekly' | 'Monthly'; 
     timeOfDay: string; 
     duration: number;
+    date: string;
 }
