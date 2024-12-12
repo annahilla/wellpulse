@@ -8,11 +8,12 @@ import ErrorMessage from "../../components/ui/ErrorMessage";
 import Modal from "../../components/ui/Modal";
 import { FormEvent, useEffect, useState } from "react";
 import { Habit } from "../../types/types";
-import { useDispatch, useSelector } from "react-redux";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
-import { createHabit } from "../../redux/habitsActions";
-import { getHabits } from "../../redux/habitsActions";
+import { createHabit, getHabits } from "../../redux/habitsActions";
 import { setError } from "../../redux/authSlice";
+
+export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const CalendarPage = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,44 +27,29 @@ const CalendarPage = () => {
         timeOfDay: '10:00',
         duration: 20,
         date: '',
+        event: {
+            title: '',
+            start: '',
+            end: ''
+        }
     });
 
-    const habits = useSelector((state: RootState) => state.habits.habits);
-    console.log(habits)
-    const error = useSelector((state: RootState) => state.user.error);
+    const { habits, error } = useTypedSelector((state) => state.habits);
     
     const dispatch = useDispatch<AppDispatch>();
 
     const closeModal = () => setIsModalOpen(false);
     const openModal = () => setIsModalOpen(true);
 
-    const calculateEndTime = (start: string, duration: number): string => {
-        const [hours, minutes] = start.split(':').map(Number);
-
-        let totalMinutes = hours * 60 + minutes + duration;
-
-        const newHours = Math.floor(totalMinutes / 60);
-        const newMinutes = totalMinutes % 60;
-    
-        const formattedHours = String(newHours).padStart(2, '0');
-        const formattedMinutes = String(newMinutes).padStart(2, '0');
-    
-        return `${formattedHours}:${formattedMinutes}`;
-    };
     
     useEffect(() => {
         dispatch(getHabits());
+        console.log(habits);
     }, [dispatch]);
 
     useEffect(() => {
-        if (events.length > 0) {
-            const mappedEvents = events.map(event => ({
-                title: event.name,
-                date: event.date,
-                start: event.start,
-                end: event.end,
-            }));
-            setEvents(mappedEvents);
+        if (habits.length > 0) {
+            setEvents(habits.map(habit => habit.event));
         }
     }, [habits]);
 
@@ -129,31 +115,19 @@ const CalendarPage = () => {
 
         try {
             await dispatch(createHabit(newHabit));
-    
-            const endTime = calculateEndTime(newHabit.timeOfDay, newHabit.duration);
-
-            const startDateTime = new Date(`${newHabit.date}T${newHabit.timeOfDay}:00`);
-            const endDateTime = new Date(`${newHabit.date}T${endTime}:00`);
-
             const newEvent: EventInput = {
                 title: newHabit.name,
-                date: newHabit.date, 
-                start: startDateTime.toISOString(),
-                end: endDateTime.toISOString()
+                date: newHabit.date,
+                start: newHabit.event.start,
+                end: newHabit.event.end,
             };
-
+    
             setEvents((prevEvents) => [...prevEvents, newEvent]);
             closeModal();
         } catch(err) {
             console.error("Error creating habit: ", err);
         }
-
-        console.log('Form data submitted: ', newHabit);
     }
-
-    useEffect(() => {
-        console.log(events)
-    }, [events])
     
     const handleDateClick = (arg: any) => {
         let title = prompt('Please enter a new title for your event');

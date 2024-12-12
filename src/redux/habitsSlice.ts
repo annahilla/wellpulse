@@ -1,32 +1,34 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Habit } from "../types/types";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Habit } from '../types/types';
 
 interface HabitsState {
     habits: Habit[];
+    loading: boolean;
     error: string | null;
 }
 
 const initialState: HabitsState = {
     habits: [],
-    error: null
-}
+    loading: false,
+    error: null,
+};
 
 const habitsSlice = createSlice({
-    name: "habits",
+    name: 'habits',
     initialState,
     reducers: {
-        setHabits: (state, action: PayloadAction<Habit[]>) => {
+        setHabits(state, action: PayloadAction<Habit[]>) {
             state.habits = action.payload;
-          },
-          setError: (state, action: PayloadAction<string>) => {
+        },
+        addHabit(state, action: PayloadAction<Habit>) {
+            state.habits = [...state.habits, action.payload];
+        },
+        setError(state, action: PayloadAction<string>) {
             state.error = action.payload;
-          },
-          addHabit: (state, action: PayloadAction<Habit>) => {
-            state.habits.push(action.payload);
-          }
-    }
-})
+        },
+    },
+});
 
-export const { setHabits, addHabit } = habitsSlice.actions;
+export const { setHabits, addHabit, setError } = habitsSlice.actions;
 
 export default habitsSlice.reducer;

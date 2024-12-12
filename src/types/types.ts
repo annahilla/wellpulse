@@ -1,3 +1,9 @@
+export interface Event {
+    title: string;
+    start: string;
+    end: string;
+}
+
 export interface Habit {
     name: string;
     category: 'Sports' | 'Nutrition' | 'Mental health' | 'Sleep' | 'Learning' | 'Work' | 'Finances' | 'Music' | 'Art' | 'Sustainability' | 'Personal growth';
@@ -5,4 +11,10 @@ export interface Habit {
     timeOfDay: string; 
     duration: number;
     date: string;
+    event: Event;
+}
+
+export interface CreateHabitResponse {
+    habit: Habit,
+    event: Event
 }

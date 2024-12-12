@@ -7,7 +7,6 @@ import { auth } from "../firebaseConfig";
 export const createHabit = createAsyncThunk(
   "habits/createHabit",
   async (habit: Habit, { getState, dispatch, rejectWithValue  }) => {
-    console.log("Sending habit data to the server:", habit);
     let token = (getState() as RootState).user.token;
 
     if (!token) {
