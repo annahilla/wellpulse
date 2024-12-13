@@ -7,228 +7,310 @@ import Button from "../../components/ui/Button";
 import ErrorMessage from "../../components/ui/ErrorMessage";
 import Modal from "../../components/ui/Modal";
 import { FormEvent, useEffect, useState } from "react";
-import { Habit } from "../../types/types";
+import { Habit, Event } from "../../types/types";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { createHabit, getHabits } from "../../redux/habitsActions";
 import { setError } from "../../redux/authSlice";
+import { calculateEndTime } from "../../utils/calculateEndTime";
 
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const CalendarPage = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [events, setEvents] = useState<EventInput[]>([]);
-    const [categories, setCategories] = useState<string[]>([]);
-    const [frequencies, setFrequencies] = useState<string[]>([]);
-    const [newHabit, setNewHabit] = useState<Habit>({
-        name: '',
-        category: 'Sports',
-        frequency: 'Daily',
-        timeOfDay: '10:00',
-        duration: 20,
-        date: '',
-        event: {
-            title: '',
-            start: '',
-            end: ''
-        }
-    });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [events, setEvents] = useState<EventInput[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [frequencies, setFrequencies] = useState<string[]>([]);
+  const [newHabit, setNewHabit] = useState<Habit>({
+    _id: "",
+    name: "",
+    category: "Sports",
+    frequency: "Daily",
+    timeOfDay: "10:00",
+    duration: 20,
+    date: "",
+  });
 
-    const { habits, error } = useTypedSelector((state) => state.habits);
-    
-    const dispatch = useDispatch<AppDispatch>();
+  const { habits, error } = useTypedSelector((state) => state.habits);
 
-    const closeModal = () => setIsModalOpen(false);
-    const openModal = () => setIsModalOpen(true);
+  const dispatch = useDispatch<AppDispatch>();
 
-    
-    useEffect(() => {
-        dispatch(getHabits());
-        console.log(habits);
-    }, [dispatch]);
+  const closeModal = () => setIsModalOpen(false);
+  const openModal = () => setIsModalOpen(true);
 
-    useEffect(() => {
-        if (habits.length > 0) {
-            setEvents(habits.map(habit => habit.event));
-        }
-    }, [habits]);
+  useEffect(() => {
+    dispatch(getHabits());
+  }, [dispatch]);
 
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await fetch("http://localhost:5000/api/options/categories");
-                const data = await response.json();
-                if (data.success) {
-                    setCategories(data.categories);
-                }
-            } catch (error) {
-                console.error("Error fetching categories:", error);
-            }
-        };
-        
-        const fetchFrequencies = async () => {
-            try {
-                const response = await fetch("http://localhost:5000/api/options/frequencies");
-                const data = await response.json();
-                if (data.success) {
-                    setFrequencies(data.frequencies);
-                }
-            } catch (error) {
-                console.error("Error fetching frequencies:", error);
-            }
-        };
+  const createEvent = (habit: Habit) => {
+    const endTime = calculateEndTime(habit.timeOfDay, habit.duration);
 
-        fetchCategories();
-        fetchFrequencies();
-    
-    }, []);
+    const habitDate = new Date(habit.date);
+    if (isNaN(habitDate.getTime())) {
+      console.error("Invalid date:", habit.date);
+      return;
+    }
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        
-        setNewHabit((prevHabit) => ({
-            ...prevHabit,
-            [name]: value,
-        }));
+    const startRecur = new Date(habit.date);
+    const endRecur = new Date(habit.date);
+    endRecur.setFullYear(endRecur.getFullYear() + 1);
+
+    const dayOfWeek = new Date(habit.date).getDay();
+
+    const newEvent: Event = {
+      title: habit.name,
+      id: habit._id,
+      startTime: habit.timeOfDay,
+      endTime: endTime,
+      startRecur: startRecur.toISOString(),
+      endRecur: endRecur.toISOString(),
+      daysOfWeek:
+        habit.frequency === "Daily" ? [0, 1, 2, 3, 4, 5, 6] : [dayOfWeek],
     };
 
-    const createHabitHandler = async  (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    setEvents((prev) => {
+      const eventExists = prev.some(
+        (event) =>
+          event.title === newEvent.title &&
+          event.startTime === newEvent.startTime
+      );
+      if (eventExists) {
+        return prev;
+      }
+      return [...prev, newEvent];
+    });
+  };
 
-        if (!newHabit.name || newHabit.name.trim() === "") {
-            dispatch(setError("Please enter the name of the habit"));
-            return;
-        }
-
-        if (newHabit.duration <= 0) {
-            dispatch(setError("Please enter a valid duration number in minutes"));
-            return;
-        }
-
-        const currentDate = new Date();
-        const habitDate = new Date(newHabit.date);
-
-        if (habitDate < currentDate) {
-            dispatch(setError("The start date cannot be before the current date"));
-            return;
-        }
-
-        try {
-            await dispatch(createHabit(newHabit));
-            const newEvent: EventInput = {
-                title: newHabit.name,
-                date: newHabit.date,
-                start: newHabit.event.start,
-                end: newHabit.event.end,
-            };
-    
-            setEvents((prevEvents) => [...prevEvents, newEvent]);
-            closeModal();
-        } catch(err) {
-            console.error("Error creating habit: ", err);
-        }
+  useEffect(() => {
+    if (habits.length > 0) {
+      habits.map((habit) => createEvent(habit));
     }
-    
-    const handleDateClick = (arg: any) => {
-        let title = prompt('Please enter a new title for your event');
-        let calendarApi = arg.view.calendar;
+  }, [habits]);
 
-        calendarApi.unselect();
-
-        if (title) {
-            const newEvent: EventInput = {
-            id:  crypto.randomUUID(),
-            title,
-            date: arg.dateStr
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/options/categories"
+        );
+        const data = await response.json();
+        if (data.success) {
+          setCategories(data.categories);
         }
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
 
-        setEvents((prevEvents) => [...prevEvents, newEvent]);
+    const fetchFrequencies = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/options/frequencies"
+        );
+        const data = await response.json();
+        if (data.success) {
+          setFrequencies(data.frequencies);
+        }
+      } catch (error) {
+        console.error("Error fetching frequencies:", error);
+      }
+    };
 
-        calendarApi.addEvent(newEvent);
-    }}
+    fetchCategories();
+    fetchFrequencies();
+  }, []);
 
-    return (
-        <div className="mb-12">
-            <div className="my-4 flex items-center justify-end">
-                <Button handleClick={openModal} type="primary" size="sm" textSize="text-md">Add Habit</Button>
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+
+    setNewHabit((prevHabit) => ({
+      ...prevHabit,
+      [name]: value,
+    }));
+  };
+
+  const createHabitHandler = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!newHabit.name || newHabit.name.trim() === "") {
+      dispatch(setError("Please enter the name of the habit"));
+      return;
+    }
+
+    if (newHabit.duration <= 0) {
+      dispatch(setError("Please enter a valid duration number in minutes"));
+      return;
+    }
+
+    const currentDate = new Date();
+    const habitDate = new Date(newHabit.date);
+
+    if (habitDate < currentDate) {
+      dispatch(setError("The start date cannot be before the current date"));
+      return;
+    }
+
+    try {
+      await dispatch(createHabit(newHabit));
+      closeModal();
+    } catch (err) {
+      console.error("Error creating habit: ", err);
+    }
+  };
+
+  const handleDateClick = () => {
+    openModal();
+  };
+
+  return (
+    <div className="mb-12">
+      <div className="my-4 flex items-center justify-end">
+        <Button
+          handleClick={openModal}
+          type="primary"
+          size="sm"
+          textSize="text-md"
+        >
+          Add Habit
+        </Button>
+      </div>
+      <div>
+        <FullCalendar
+          plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+          headerToolbar={{
+            left: "prev,next today",
+            center: "title",
+            right: "dayGridMonth,timeGridWeek,timeGridDay",
+          }}
+          initialView="dayGridMonth"
+          editable={true}
+          selectable={true}
+          selectMirror={true}
+          dayMaxEvents={true}
+          events={events}
+          dateClick={handleDateClick}
+          eventContent={renderEventContent}
+        />
+      </div>
+      <Modal isOpen={isModalOpen} closeModal={closeModal}>
+        <h3 className="text-2xl font-bold mb-4">Add a new habit</h3>
+        <form
+          onSubmit={createHabitHandler}
+          className="flex flex-col gap-5 my-6"
+          noValidate
+        >
+          <div className="flex flex-col gap-2">
+            <label htmlFor="name">What habit do you want to incorporate?</label>
+            <input
+              onChange={handleInputChange}
+              className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
+              type="text"
+              name="name"
+              placeholder="Morning Walk"
+              value={newHabit.name}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="category">
+              What category does this habit belong to?
+            </label>
+            <select
+              onChange={handleInputChange}
+              className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
+              name="category"
+              value={newHabit.category}
+              required
+            >
+              {categories.length > 0 &&
+                categories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="frequency">
+              How often would you like to do it?
+            </label>
+            <select
+              onChange={handleInputChange}
+              className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
+              name="frequency"
+              value={newHabit.frequency}
+              required
+            >
+              {frequencies.length > 0 &&
+                frequencies.map((frequency) => (
+                  <option key={frequency} value={frequency}>
+                    {frequency}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="timeOfDay">
+              When during the day would you like to do it?
+            </label>
+            <input
+              onChange={handleInputChange}
+              className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
+              name="timeOfDay"
+              type="time"
+              value={newHabit.timeOfDay}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="duration">
+              How much time in minutes would you spend on this habit?
+            </label>
+            <div className="relative flex items-center rounded border border-neutral-200 active:outline-none focus:outline-none">
+              <input
+                onChange={handleInputChange}
+                className="px-5 py-2"
+                name="duration"
+                type="number"
+                placeholder="30"
+                value={newHabit.duration}
+                required
+              />
+              <span className="absolute text-sm right-0 px-5 py-2 border-l">
+                minutes
+              </span>
             </div>
-            <div>
-                <FullCalendar
-                    plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]} 
-                    headerToolbar={{
-                        left: 'prev,next today',
-                        center: 'title',
-                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
-                      }}
-                    initialView="dayGridMonth"
-                    editable={true}
-                    selectable={true}
-                    selectMirror={true}
-                    dayMaxEvents={true}
-                    events={events}
-                    dateClick={handleDateClick} 
-                    eventContent={renderEventContent}
-                />
-            </div>
-            <Modal isOpen={isModalOpen} closeModal={closeModal}>
-                <h3 className="text-2xl font-bold mb-4">Add a new habit</h3>
-                <form onSubmit={createHabitHandler} className="flex flex-col gap-5 my-6" noValidate>
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="name">What habit do you want to incorporate?</label>
-                        <input onChange={handleInputChange} className="px-5 py-2 rounded border border-neutral-200 focus:outline-none" type="text" name="name" placeholder="Morning Walk" value={newHabit.name} required />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="category">What category does this habit belong to?</label>
-                        <select onChange={handleInputChange} className="px-5 py-2 rounded border border-neutral-200 focus:outline-none" name="category" value={newHabit.category} required>
-                            {
-                                categories.length > 0 && categories.map(category => (
-                                    <option key={category} value={category}>{category}</option>
-                                ))
-                            }
-                        </select>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="frequency">How often would you like to do it?</label>
-                        <select onChange={handleInputChange} className="px-5 py-2 rounded border border-neutral-200 focus:outline-none" name="frequency" value={newHabit.frequency} required>
-                            {
-                                frequencies.length > 0 && frequencies.map(frequency => (
-                                    <option key={frequency} value={frequency}>{frequency}</option>
-                                ))
-                            }
-                        </select>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="timeOfDay">When during the day would you like to do it?</label>
-                        <input onChange={handleInputChange} className="px-5 py-2 rounded border border-neutral-200 focus:outline-none" name="timeOfDay" type="time" value={newHabit.timeOfDay} required/>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="duration">How much time in minutes would you spend on this habit?</label>
-                        <div className="relative flex items-center rounded border border-neutral-200 active:outline-none focus:outline-none">
-                            <input onChange={handleInputChange} className="px-5 py-2" name="duration" type="number" placeholder="30" value={newHabit.duration} required/>
-                            <span className="absolute text-sm right-0 px-5 py-2 border-l">minutes</span>
-                        </div>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                        <label htmlFor="date">When do you want to start this habit?</label>
-                        <input onChange={handleInputChange} className="px-5 py-2 rounded border border-neutral-200 focus:outline-none" name="date" type="date" value={newHabit.date} required />
-                    </div>
-                    <Button type="primary" size="sm" textSize="text-md">Add</Button>
-                    {
-                        error && <ErrorMessage text={error} />
-                    }
-                </form>
-            </Modal>
-        </div>
-    )
-}
+          </div>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="date">When do you want to start this habit?</label>
+            <input
+              onChange={handleInputChange}
+              className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
+              name="date"
+              type="date"
+              value={newHabit.date}
+              required
+            />
+          </div>
+          <Button type="primary" size="sm" textSize="text-md">
+            Add
+          </Button>
+          {error && <ErrorMessage text={error} />}
+        </form>
+      </Modal>
+    </div>
+  );
+};
 
 const renderEventContent = (eventInfo: EventContentArg) => {
-    return (
-        <>
-          <b>{eventInfo.timeText}</b>
-          <p className="px-1">{eventInfo.event.title}</p>
-        </>
-      )
-}
+  return (
+    <>
+      <b>{eventInfo.timeText}</b>
+      <p className="px-1">{eventInfo.event.title}</p>
+    </>
+  );
+};
 
 export default CalendarPage;
