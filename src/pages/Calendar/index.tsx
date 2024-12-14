@@ -13,6 +13,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { createHabit, getHabits } from "../../redux/habitsActions";
 import { setError } from "../../redux/authSlice";
 import { calculateEndTime } from "../../utils/calculateEndTime";
+import useToolbarConfig from "../../hooks/useToolbarConfig";
 
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -34,6 +35,8 @@ const CalendarPage = () => {
   const { habits, error } = useTypedSelector((state) => state.habits);
 
   const dispatch = useDispatch<AppDispatch>();
+
+  const toolbarConfig = useToolbarConfig();
 
   const closeModal = () => setIsModalOpen(false);
   const openModal = () => setIsModalOpen(true);
@@ -166,7 +169,7 @@ const CalendarPage = () => {
 
   return (
     <div className="mb-12">
-      <div className="my-4 flex items-center justify-end">
+      <div className="my-4 flex items-center justify-center md:justify-end">
         <Button
           handleClick={openModal}
           type="primary"
@@ -179,11 +182,7 @@ const CalendarPage = () => {
       <div>
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
-          headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay",
-          }}
+          headerToolbar={toolbarConfig}
           initialView="dayGridMonth"
           editable={true}
           selectable={true}
@@ -192,10 +191,15 @@ const CalendarPage = () => {
           events={events}
           dateClick={handleDateClick}
           eventContent={renderEventContent}
+          views={{
+            timeGridWeek: {
+              dayHeaderFormat: { weekday: "short" },
+            },
+          }}
         />
       </div>
       <Modal isOpen={isModalOpen} closeModal={closeModal}>
-        <h3 className="text-2xl font-bold mb-4">Add a new habit</h3>
+        <h3 className="text-2xl text-center font-bold mb-4">Add a new habit</h3>
         <form
           onSubmit={createHabitHandler}
           className="flex flex-col gap-5 my-6"

@@ -1,3 +1,62 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.fc-button-primary {
+    background-color: transparent !important;
+    border-color: rgb(235, 235, 235) !important;
+    color: #333 !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.fc-button-active,
+fc-button:hover {
+    background-color: rgb(250, 249, 249) !important;
+}
+
+.fc-button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+@media (max-width: 768px) {
+    .fc {
+        height: auto !important;
+        min-height: 220vh;
+        overflow: visible !important;
+    }
+
+    .fc-header-toolbar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .fc-header-toolbar .fc-toolbar-chunk:first-child {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.75rem;
+        margin: 1rem 0;
+    }
+
+    .fc-header-toolbar .fc-toolbar-chunk:nth-child(2) {
+        display: none;
+    }
+
+
+    .fc-daygrid-day {
+        padding: 0.5rem !important;
+        font-size: 0.8rem !important;
+    }
+
+    .fc-day {
+        padding: 1rem !important;
+    }
+
+    .fc-timegrid-axis-cushion {
+        font-size: 0.8rem;
+    }
+}
