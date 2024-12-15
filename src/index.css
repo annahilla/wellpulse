@@ -2,6 +2,30 @@
 @tailwind components;
 @tailwind utilities;
 
+th .fc-scroller {
+    overflow: hidden !important;
+}
+
+tbody tr:first-child td .fc-scroller-harness .fc-scroller {
+    overflow: hidden !important;
+}
+
+tbody tr:nth-child(2) {
+    overflow: auto;
+}
+
+.fc-scroller::-webkit-scrollbar {
+    width: 4px !important;
+}
+
+.fc-scroller::-webkit-scrollbar-track {
+    background-color: #f1f1f1 !important;
+}
+
+.fc-scroller::-webkit-scrollbar-thumb {
+    background-color: #b3b3b3 !important;
+}
+
 .fc-button-primary {
     background-color: transparent !important;
     border-color: rgb(235, 235, 235) !important;
