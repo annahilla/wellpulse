@@ -25,7 +25,8 @@ const Button = ({
   if (type === "primary") {
     return (
       <button
-        onClick={handleClick}
+      type={handleClick ? "button" : "submit"}
+      onClick={handleClick}
         className={`text-white bg-green ${btnSize} ${textSize} ${basicButtonStyles} `}
       >
         {children}
@@ -48,6 +49,7 @@ const Button = ({
   if (type === "alert") {
     return (
       <button
+      type="button"
         onClick={handleClick}
         className={`text-white bg-red-700 ${btnSize} ${textSize} ${basicButtonStyles} `}
       >

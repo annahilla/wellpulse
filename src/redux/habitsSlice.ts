@@ -26,12 +26,18 @@ const habitsSlice = createSlice({
         removeHabit(state, action: PayloadAction<string>) {
             state.habits = state.habits.filter(habit => habit._id !== action.payload);
         },
+        updateHabit(state, action: PayloadAction<Habit>) {
+            const index = state.habits.findIndex(habit => habit._id === action.payload._id);
+            if (index !== -1) {
+                state.habits[index] = action.payload;
+            }
+        },
         setError(state, action: PayloadAction<string>) {
             state.error = action.payload;
         },
     },
 });
 
-export const { setHabits, addHabit, removeHabit, setError } = habitsSlice.actions;
+export const { setHabits, addHabit, removeHabit, updateHabit, setError } = habitsSlice.actions;
 
 export default habitsSlice.reducer;

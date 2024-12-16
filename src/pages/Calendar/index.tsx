@@ -21,7 +21,14 @@ const CalendarPage = () => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
   const [events, setEvents] = useState<EventInput[]>([]);
-  const [selectedHabit, setSelectedHabit] = useState<Habit | null>(null);
+  const [selectedHabit, setSelectedHabit] = useState<Habit>({
+    name: "",
+    category: "Sports",
+    frequency: "Daily",
+    timeOfDay: "10:00",
+    duration: 20,
+    date: "",
+  });
   const [newHabit, setNewHabit] = useState<Habit>({
     name: "",
     category: "Sports",
