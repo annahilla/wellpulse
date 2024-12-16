@@ -136,7 +136,11 @@ const CalendarPage = () => {
     }
   };
 
-  const handleDateClick = () => {
+  const handleDateClick = (arg:any) => {
+    setNewHabit((prevHabit) => ({
+      ...prevHabit,
+      date: arg.dateStr, 
+    }));
     openFormModal();
   };
 
