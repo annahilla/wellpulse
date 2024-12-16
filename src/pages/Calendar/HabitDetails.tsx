@@ -120,8 +120,8 @@ const HabitDetails = ({isHabitModalOpen, habit, closeHabitModal, removeEvent} : 
                 </div>
             </div>
             <div className="flex items-center m-auto gap-6 mt-7">
-                <Button type="primary" textSize="text-md" size="sm">Update</Button>
-                <Button handleClick={handleDeleteHabit} type="alert" textSize="text-md" size="sm">Delete</Button>
+                <Button isDisabled={false} type="primary" textSize="text-md" size="sm">Update</Button>
+                <Button isDisabled={false} handleClick={handleDeleteHabit} type="alert" textSize="text-md" size="sm">Delete</Button>
             </div>
         </form>
         </div>

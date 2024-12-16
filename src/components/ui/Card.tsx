@@ -22,6 +22,7 @@ const Card = ({ title, text, icon, page }: CardProps) => {
       <h3 className="text-2xl font-bold">{title}</h3>
       <p className="my-8">{text}</p>
       <Button
+      isDisabled={false}
         handleClick={() => handleNavigate(page)}
         size="sm"
         type="secondary"

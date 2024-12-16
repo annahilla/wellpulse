@@ -182,6 +182,7 @@ const CalendarPage = () => {
     <div className="mb-12">
       <div className="my-4 flex items-center justify-center md:justify-end">
         <Button
+        isDisabled={false}
           handleClick={openFormModal}
           type="primary"
           size="sm"

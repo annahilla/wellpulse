@@ -58,6 +58,7 @@ const Navbar = () => {
               </li>
               <li className="cursor-pointer hover:animate-pulse">
                 <Button
+                isDisabled={false}
                   handleClick={handleLogout}
                   size="sm"
                   textSize="text-md"
@@ -70,6 +71,7 @@ const Navbar = () => {
           ) : (
             <li className="flex items-center justify-between gap-5 md">
               <Button
+              isDisabled={false}
                 handleClick={() => navigate("/login")}
                 type="primary"
                 size="sm"
@@ -78,6 +80,7 @@ const Navbar = () => {
                 Log In
               </Button>
               <Button
+              isDisabled={false}
                 handleClick={() => navigate("/signup")}
                 type="secondary"
                 size="sm"

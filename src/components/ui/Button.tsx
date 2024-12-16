@@ -4,6 +4,7 @@ interface ButtonProps {
   size: "sm" | "lg";
   type: "primary" | "secondary" | "alert";
   handleClick?: () => void;
+  isDisabled: boolean, 
 }
 
 const Button = ({
@@ -11,9 +12,11 @@ const Button = ({
   textSize,
   size,
   type,
+  isDisabled,
   handleClick,
 }: ButtonProps) => {
-  const basicButtonStyles = "rounded-md shadow outline-0 hover:animate-pulse";
+  const basicButtonStyles = "rounded-md shadow outline-0";
+  const pulseAnimation = !isDisabled ? "hover:animate-pulse" : "";
   let btnSize;
 
   if (size === "sm") {
@@ -27,7 +30,8 @@ const Button = ({
       <button
       type={handleClick ? "button" : "submit"}
       onClick={handleClick}
-        className={`text-white bg-green ${btnSize} ${textSize} ${basicButtonStyles} `}
+      disabled={isDisabled}
+        className={`text-white bg-green ${btnSize} ${textSize} ${basicButtonStyles} ${pulseAnimation} `}
       >
         {children}
       </button>
@@ -39,6 +43,7 @@ const Button = ({
       <button
       type={handleClick ? "button" : "submit"}
         onClick={handleClick}
+        disabled={isDisabled}
         className={`border border-green text-green ${btnSize} ${textSize} ${basicButtonStyles}`}
       >
         {children}
@@ -51,6 +56,7 @@ const Button = ({
       <button
       type="button"
         onClick={handleClick}
+        disabled={isDisabled}
         className={`text-white bg-red-700 ${btnSize} ${textSize} ${basicButtonStyles} `}
       >
         {children}

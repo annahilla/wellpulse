@@ -7,6 +7,8 @@ import { loginUser, loginUserWithGoogle } from "../redux/authActions";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import { setError } from "../redux/authSlice";
+import ErrorMessage from "../components/ui/ErrorMessage";
+import { useTypedSelector } from "./Calendar";
 
 const LoginPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -17,6 +19,7 @@ const LoginPage = () => {
   const isLoggedIn = useSelector(
     (state: RootState) => state.user.isAuthenticated
   );
+  const { error } = useTypedSelector((state) => state.user);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -52,7 +55,8 @@ const LoginPage = () => {
     <div className="flex items-center justify-center bg-neutral-100 h-screen text-center">
       <form
         onSubmit={handleLogin}
-        className="flex flex-col bg-white py-10 px-14 rounded"
+        className="flex flex-col bg-white py-10 px-14 rounded w-80"
+        noValidate
       >
         <img className="h-14 m-auto" src={logo} alt="WellPulse logo" />
         <h2 className="text-xl text-center py-4">Login to WellPulse</h2>
@@ -75,21 +79,23 @@ const LoginPage = () => {
             value={password}
           />
         </div>
-        <Button type="primary" textSize="text-md" size="sm">
+        <Button isDisabled={error ? true: false} type="primary" textSize="text-md" size="sm">
           Login
         </Button>
         <button
           type="button"
           onClick={handleGoogleSignIn}
-          className="flex items-center justify-start gap-2 my-4 border border-light-grey px-3 py-2 shadow-sm rounded"
+          className="flex items-center justify-start gap-2 my-4 border border-light-grey px-3 py-2 text-sm shadow-sm rounded"
         >
           <FcGoogle size={22} />
           Continue with Google
         </button>
+        {error && <ErrorMessage text={error} />}
         <Link className="my-4 text-sky-600 underline" to="/signup">
           Don't have an account?
         </Link>
       </form>
+      
     </div>
   );
 };

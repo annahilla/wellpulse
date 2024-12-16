@@ -119,7 +119,7 @@ const AddHabitForm = ({isFormModalOpen, newHabit, closeFormModal, createHabitHan
               required
             />
           </div>
-          <Button type="primary" size="sm" textSize="text-md">
+          <Button isDisabled={error ? true : false} type="primary" size="sm" textSize="text-md">
             Add
           </Button>
           {error && <ErrorMessage text={error} />}

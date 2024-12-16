@@ -14,7 +14,13 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async ({ email, password }: User, thunkAPI) => {
     if (!email || email.trim() === "") {
-      const errorMessage = "Please enter an email"; 
+      const errorMessage = "Please enter your email"; 
+      thunkAPI.dispatch(setError(errorMessage)); 
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+
+    if (!password || password.trim() === "") {
+      const errorMessage = "Please enter your password"; 
       thunkAPI.dispatch(setError(errorMessage)); 
       return thunkAPI.rejectWithValue(errorMessage);
     }
@@ -32,7 +38,7 @@ export const loginUser = createAsyncThunk(
         thunkAPI.dispatch(setError(errorMessage));
         return thunkAPI.rejectWithValue(errorMessage);
       } else {
-        const errorMessage = "There was an error in the login process, please try again later."
+        const errorMessage = "Your email or password are incorrect."
         thunkAPI.dispatch(setError(errorMessage));
         return thunkAPI.rejectWithValue(errorMessage);
       }
@@ -66,6 +72,12 @@ export const signUpUser = createAsyncThunk(
   ) => {
     if (!email || email.trim() === "") {
       const errorMessage = "Please enter an email"; 
+      thunkAPI.dispatch(setError(errorMessage)); 
+      return thunkAPI.rejectWithValue(errorMessage);
+    }
+
+    if (!password || password.trim() === "") {
+      const errorMessage = "Please enter a password"; 
       thunkAPI.dispatch(setError(errorMessage)); 
       return thunkAPI.rejectWithValue(errorMessage);
     }

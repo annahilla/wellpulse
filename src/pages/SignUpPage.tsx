@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setError } from "../redux/authSlice.ts";
 import { loginUserWithGoogle, signUpUser } from "../redux/authActions.ts";
 import { AppDispatch, RootState } from "../redux/store.ts";
-import { IoIosAlert } from "react-icons/io";
+import ErrorMessage from "../components/ui/ErrorMessage.tsx";
 
 const SignUpPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -55,7 +55,8 @@ const SignUpPage = () => {
     <div className="flex items-center justify-center bg-neutral-100 h-screen text-center">
       <form
         onSubmit={handleSignUp}
-        className="flex flex-col bg-white py-10 px-14 rounded"
+        className="flex flex-col bg-white py-10 px-14 rounded w-80"
+        noValidate
       >
         <img className="h-14 m-auto" src={logo} alt="WellPulse logo" />
         <h2 className="text-xl text-center py-4">Sign Up to WellPulse</h2>
@@ -78,13 +79,13 @@ const SignUpPage = () => {
             value={password}
           />
         </div>
-        <Button type="primary" textSize="text-md" size="sm">
+        <Button isDisabled={error ? true: false} type="primary" textSize="text-md" size="sm">
           Sign Up
         </Button>
         <button
           onClick={handleGoogleSignIn}
           type="button"
-          className="flex items-center justify-start gap-2 my-4 border border-light-grey px-3 py-2 shadow-sm rounded"
+          className="flex items-center justify-start gap-2 my-4 border border-light-grey px-3 py-2 text-sm shadow-sm rounded"
         >
           <FcGoogle size={22} />
           Continue with Google
@@ -93,15 +94,7 @@ const SignUpPage = () => {
           Already have an account?
         </Link>
 
-        {error && (
-          <p
-            role="alert"
-            className="flex items-center justify-center gap-2 text-sm text-red-500 p-3 pb-8"
-          >
-            <IoIosAlert />
-            {error}
-          </p>
-        )}
+        {error && <ErrorMessage text={error} />}
       </form>
     </div>
   );

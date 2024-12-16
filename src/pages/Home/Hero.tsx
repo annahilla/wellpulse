@@ -16,6 +16,7 @@ const Hero = () => {
         ultimate tool for achieving balance and energy in your daily life.
       </p>
       <Button
+      isDisabled={false}
         handleClick={() => navigate("/signup")}
         type="primary"
         size="lg"

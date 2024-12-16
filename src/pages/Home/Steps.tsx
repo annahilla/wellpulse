@@ -16,6 +16,7 @@ const Steps = () => {
         </li>
       </ol>
       <Button
+      isDisabled={false}
         handleClick={() => navigate("/signup")}
         type="primary"
         size="lg"
