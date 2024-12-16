@@ -2,7 +2,7 @@ interface ButtonProps {
   children: React.ReactNode;
   textSize: "text-md" | "text-lg";
   size: "sm" | "lg";
-  type: "primary" | "secondary";
+  type: "primary" | "secondary" | "alert";
   handleClick?: () => void;
 }
 
@@ -39,6 +39,17 @@ const Button = ({
       type={handleClick ? "button" : "submit"}
         onClick={handleClick}
         className={`border border-green text-green ${btnSize} ${textSize} ${basicButtonStyles}`}
+      >
+        {children}
+      </button>
+    );
+  }
+
+  if (type === "alert") {
+    return (
+      <button
+        onClick={handleClick}
+        className={`text-white bg-red-700 ${btnSize} ${textSize} ${basicButtonStyles} `}
       >
         {children}
       </button>

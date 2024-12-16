@@ -9,7 +9,7 @@ export interface Event {
 }
 
 export interface Habit {
-    _id: string | undefined;
+    _id?: string;
     name: string;
     category: 'Sports' | 'Nutrition' | 'Mental health' | 'Sleep' | 'Learning' | 'Work' | 'Finances' | 'Music' | 'Art' | 'Sustainability' | 'Personal growth';
     frequency: 'Daily' | 'Weekly'; 

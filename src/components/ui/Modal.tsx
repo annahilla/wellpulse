@@ -28,7 +28,7 @@ const Modal = ({ isOpen, closeModal, children }: ModalProps) => {
 
   return (
     isOpen && (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[11000]">
         <div
           ref={modalRef}
           className="w-11/12 max-w-2xl relative bg-white p-10 rounded-xl flex flex-col items-center justify-start lg:w-1/2 max-h-[90vh]"

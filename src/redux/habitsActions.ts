@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { addHabit, setHabits } from "./habitsSlice";
+import { addHabit, removeHabit, setHabits } from "./habitsSlice";
 import { Habit } from "../types/types";
 import { RootState } from "./store";
 import { auth } from "../firebaseConfig";
@@ -94,6 +94,52 @@ export const getHabits = createAsyncThunk(
       }
     } catch (error) {
       console.error("Error getting habits:", error);
+      throw error;
+    }
+  }
+);
+
+export const deleteHabit = createAsyncThunk(
+  'habits/deleteHabit',
+  async (habitId: string, { getState, dispatch, rejectWithValue }) => {
+    let token = (getState() as RootState).user.token;
+
+    if (!token) {
+      const user = auth.currentUser;
+      if (user) {
+        try {
+          token = await user.getIdToken(true);
+          console.log('Refreshed Firebase token:', token);
+        } catch (error) {
+          console.error('Failed to refresh token:', error);
+          return rejectWithValue('No token available or failed to refresh token.');
+        }
+      }
+    }
+
+    if (!token) {
+      throw new Error('No token available');
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5000/api/habits/${habitId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        dispatch(removeHabit(habitId));
+        return habitId;
+      } else {
+        throw new Error(data.message || 'Failed to delete habit');
+      }
+    } catch (error) {
+      console.error('Error deleting habit:', error);
       throw error;
     }
   }
