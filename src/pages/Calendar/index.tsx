@@ -17,6 +17,20 @@ import HabitDetails from "./HabitDetails";
 
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
+const categoryColors: { [key: string]: string } = {
+  Sports: "bg-blue-300",
+  Nutrition: "bg-green-300",
+  "Mental health" : "bg-purple-300",
+  Sleep: "bg-indigo-300",
+  Learning: "bg-yellow-300",
+  Work: "bg-gray-300",
+  Finances: "bg-teal-300",
+  Music: "bg-pink-300",
+  Art: "bg-red-300",
+  Sustainability: "bg-lime-300",
+  "Personal growth": "bg-orange-300",
+};
+
 const CalendarPage = () => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
@@ -73,8 +87,10 @@ const CalendarPage = () => {
       endTime: endTime,
       startRecur: startRecur.toISOString(),
       endRecur: endRecur.toISOString(),
-      daysOfWeek:
-        habit.frequency === "Daily" ? [0, 1, 2, 3, 4, 5, 6] : [dayOfWeek],
+      daysOfWeek: habit.frequency === "Daily" ? [0, 1, 2, 3, 4, 5, 6] : [dayOfWeek],
+      extendedProps: {
+        category: habit.category,
+      },
     };
 
     setEvents((prev) => {
@@ -157,6 +173,11 @@ const CalendarPage = () => {
     setEvents((prev) => prev.filter((event) => event.id !== habitId));
   };
 
+  const eventClassNames = (eventInfo: any) => {
+    const category = eventInfo.event.extendedProps?.category;
+    return categoryColors[category] || "bg-gray-300";  // Default to gray if category doesn't exist
+  };
+
   return (
     <div className="mb-12">
       <div className="my-4 flex items-center justify-center md:justify-end">
@@ -181,6 +202,7 @@ const CalendarPage = () => {
           events={events}
           eventClick={handleEventClick}
           dateClick={handleDateClick}
+          eventClassNames={eventClassNames}
           eventContent={renderEventContent}
         />
       </div>

@@ -6,6 +6,9 @@ export interface Event {
     startRecur: string;
     endRecur: string;
     daysOfWeek: number[];
+    extendedProps: {
+        category: 'Sports' | 'Nutrition' | 'Mental health' | 'Sleep' | 'Learning' | 'Work' | 'Finances' | 'Music' | 'Art' | 'Sustainability' | 'Personal growth'
+    }
 }
 
 export interface Habit {
