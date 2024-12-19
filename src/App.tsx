@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router";
 import MainLayout from "./layouts/MainLayout";
 import HomePage from "./pages/Home";
 import CalendarPage from "./pages/Calendar";
-import MapPage from "./pages/MapPage";
+import MapPage from "./pages/Map";
 import ProgressPage from "./pages/ProgressPage";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
@@ -10,7 +10,6 @@ import AuthLayout from "./layouts/AuthLayout";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
-import HabitsPage from "./pages/HabitsPage";
 
 function App() {
   const isLoggedIn = useSelector(
@@ -26,7 +25,6 @@ function App() {
             <ProtectedRoute canActivate={isLoggedIn} redirectPath="/login" />
           }
         >
-          <Route path="/habits" element={<HabitsPage />} />
           <Route path="/calendar" element={<CalendarPage />} />
           <Route path="/map" element={<MapPage />} />
           <Route path="/progress" element={<ProgressPage />} />
