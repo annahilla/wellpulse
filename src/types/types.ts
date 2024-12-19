@@ -19,4 +19,5 @@ export interface Habit {
     timeOfDay: string; 
     duration: number;
     date: string;
+    completedDays: string[];
 }

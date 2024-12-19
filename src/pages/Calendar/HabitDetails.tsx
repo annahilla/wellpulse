@@ -4,7 +4,7 @@ import Button from "../../components/ui/Button";
 import { useDispatch } from "react-redux";
 import { deleteHabit, updateHabitAsync } from "../../redux/habitsActions";
 import { AppDispatch } from "../../redux/store";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import useHabitOptions from "../../hooks/useHabitOptions";
 
 interface HabitDetailsProps {
@@ -20,12 +20,24 @@ const HabitDetails = ({isHabitModalOpen, habit, closeHabitModal, removeEvent} : 
     
     const [updatedHabit, setUpdatedHabit] = useState<Habit>(habit);
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = event.target;
             setUpdatedHabit((prevHabit) => ({
                 ...prevHabit,
                 [name]: value,
             }));
+    };
+
+    const handleCompletionChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const { checked } = event.target;
+        const dateClicked = updatedHabit.date; 
+
+        setUpdatedHabit((prevHabit) => {
+            const newCompletedDays = checked
+                ? [...prevHabit.completedDays, dateClicked]
+                : prevHabit.completedDays.filter((day) => day !== dateClicked); 
+            return { ...prevHabit, completedDays: newCompletedDays };
+        });
     };
 
     useEffect(() => {
@@ -61,7 +73,11 @@ const HabitDetails = ({isHabitModalOpen, habit, closeHabitModal, removeEvent} : 
         <h3 className="text-2xl text-center font-bold mb-8">Edit your habit</h3>
         <div className="flex flex-col items-center">
         <form onSubmit={handleSubmit} className="flex flex-col items-start gap-4 text-lg">
-        <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 w-full p-4 bg-light-green m-auto">
+                <input name="done" type="checkbox" onChange={handleCompletionChange} checked={updatedHabit.completedDays.includes(updatedHabit.date)} />
+                <p className="font-bold">Completed</p>
+            </div>
+            <div className="flex items-center gap-4">
                 <p className="font-bold">Name:</p>
                 <input name="name"  type="text" onChange={handleChange} className="border inputx-12 px-4 py-1 rounded" value={updatedHabit.name} />
             </div>
@@ -119,8 +135,12 @@ const HabitDetails = ({isHabitModalOpen, habit, closeHabitModal, removeEvent} : 
                </span>
                 </div>
             </div>
+            <div className="flex items-center gap-4">
+                <p className="font-bold">Date:</p>
+                <input name="date" type="date" onChange={handleChange} className="border inputx-12 px-4 py-1 rounded" value={updatedHabit.date} disabled/>
+            </div>
             <div className="flex items-center m-auto gap-6 mt-7">
-                <Button isDisabled={false} type="primary" textSize="text-md" size="sm">Update</Button>
+                <Button isDisabled={false} type="primary" textSize="text-md" size="sm">Save</Button>
                 <Button isDisabled={false} handleClick={handleDeleteHabit} type="alert" textSize="text-md" size="sm">Delete</Button>
             </div>
         </form>

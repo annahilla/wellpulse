@@ -42,6 +42,7 @@ const CalendarPage = () => {
     timeOfDay: "10:00",
     duration: 20,
     date: "",
+    completedDays: []
   });
   const [newHabit, setNewHabit] = useState<Habit>({
     name: "",
@@ -50,6 +51,7 @@ const CalendarPage = () => {
     timeOfDay: "10:00",
     duration: 20,
     date: "",
+    completedDays: []
   });
   const { habits } = useTypedSelector((state) => state.habits);
   const dispatch = useDispatch<AppDispatch>();
@@ -126,6 +128,11 @@ const CalendarPage = () => {
   const createHabitHandler = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    const habitToCreate = {
+      ...newHabit,
+      completedDays: []
+  };
+
     if (!newHabit.name || newHabit.name.trim() === "") {
       dispatch(setError("Please enter the name of the habit"));
       return;
@@ -145,7 +152,7 @@ const CalendarPage = () => {
     }
 
     try {
-      await dispatch(createHabit(newHabit));
+      await dispatch(createHabit(habitToCreate));
       closeFormModal();
     } catch (err) {
       console.error("Error creating habit: ", err);
@@ -164,7 +171,13 @@ const CalendarPage = () => {
     const clickedEvent = eventInfo.event;
     const habitDetails = habits.find(habit => habit._id === clickedEvent.id);
     if (habitDetails) {
-      setSelectedHabit(habitDetails);
+      const eventDate = clickedEvent.startStr.split('T')[0];
+
+      const updatedHabit = {
+        ...habitDetails,
+        date: eventDate, 
+    };
+      setSelectedHabit((updatedHabit));
       openHabitModal();
     }
   };
