@@ -5,7 +5,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import { EventContentArg, EventInput } from "@fullcalendar/core/index.js";
 import Button from "../../components/ui/Button";
 import { FormEvent, useEffect, useState } from "react";
-import { Habit, Event } from "../../types/types";
+import { Habit, Event, Categories } from "../../types/types";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { createHabit, getHabits } from "../../redux/habitsActions";
@@ -18,17 +18,11 @@ import HabitDetails from "./HabitDetails";
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const categoryColors: { [key: string]: string } = {
-  Sports: "bg-blue-300",
-  Nutrition: "bg-green-300",
-  "Mental health" : "bg-purple-300",
-  Sleep: "bg-indigo-300",
-  Learning: "bg-yellow-300",
-  Work: "bg-gray-300",
-  Finances: "bg-teal-300",
-  Music: "bg-pink-300",
-  Art: "bg-red-300",
-  Sustainability: "bg-lime-300",
-  "Personal growth": "bg-orange-300",
+  [Categories.Sports]: "bg-blue-300",
+  [Categories.Nutrition]: "bg-emerald-300",
+  [Categories.MentalHealth]: "bg-purple-300",
+  [Categories.Learning]: "bg-yellow-200",
+  [Categories.Art]: "bg-amber-400",
 };
 
 const CalendarPage = () => {
@@ -37,7 +31,7 @@ const CalendarPage = () => {
   const [events, setEvents] = useState<EventInput[]>([]);
   const [selectedHabit, setSelectedHabit] = useState<Habit>({
     name: "",
-    category: "Sports",
+    category: Categories.Sports,
     frequency: "Daily",
     timeOfDay: "10:00",
     duration: 20,
@@ -46,7 +40,7 @@ const CalendarPage = () => {
   });
   const [newHabit, setNewHabit] = useState<Habit>({
     name: "",
-    category: "Sports",
+    category: Categories.Sports,
     frequency: "Daily",
     timeOfDay: "10:00",
     duration: 20,
@@ -110,6 +104,7 @@ const CalendarPage = () => {
 
   useEffect(() => {
     if (habits.length > 0) {
+      setEvents([])
       habits.map((habit) => createEvent(habit));
     }
   }, [habits]);
@@ -182,13 +177,9 @@ const CalendarPage = () => {
     }
   };
 
-  const removeEvent = (habitId: string) => {
-    setEvents((prev) => prev.filter((event) => event.id !== habitId));
-  };
-
   const eventClassNames = (eventInfo: any) => {
     const category = eventInfo.event.extendedProps?.category;
-    return categoryColors[category] || "bg-gray-300";  // Default to gray if category doesn't exist
+    return categoryColors[category] || "bg-gray-300";
   };
 
   return (
@@ -231,7 +222,6 @@ const CalendarPage = () => {
         isHabitModalOpen={isHabitModalOpen}
         habit={selectedHabit}
         closeHabitModal={closeHabitModal}
-        removeEvent={removeEvent}
       />
     </div>
   );

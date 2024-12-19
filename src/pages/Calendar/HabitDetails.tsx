@@ -11,10 +11,9 @@ interface HabitDetailsProps {
     isHabitModalOpen: boolean,
     habit: Habit,
     closeHabitModal: () =>  void,
-    removeEvent: (id: string) =>  void,
 }
 
-const HabitDetails = ({isHabitModalOpen, habit, closeHabitModal, removeEvent} : HabitDetailsProps) => {
+const HabitDetails = ({isHabitModalOpen, habit, closeHabitModal} : HabitDetailsProps) => {
     const dispatch = useDispatch<AppDispatch>();
     const { categories, frequencies } = useHabitOptions();
     
@@ -60,7 +59,6 @@ const HabitDetails = ({isHabitModalOpen, habit, closeHabitModal, removeEvent} : 
         try {
             if (habit && habit._id !== undefined) {
                 await dispatch(deleteHabit(habit._id));
-                removeEvent(habit._id)
                 closeHabitModal();
             }
             } catch (err) {

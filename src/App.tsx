@@ -3,7 +3,7 @@ import MainLayout from "./layouts/MainLayout";
 import HomePage from "./pages/Home";
 import CalendarPage from "./pages/Calendar";
 import MapPage from "./pages/Map";
-import ProgressPage from "./pages/ProgressPage";
+import ProgressPage from "./pages/Progress";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import AuthLayout from "./layouts/AuthLayout";

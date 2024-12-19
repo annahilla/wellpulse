@@ -1,3 +1,11 @@
+export enum Categories {
+    Sports = 'Sports',
+    Nutrition = 'Nutrition',
+    MentalHealth = 'Mental health',
+    Learning = 'Learning',
+    Art = 'Art'
+}
+
 export interface Event {
     id: string | undefined;
     title: string;
@@ -7,14 +15,14 @@ export interface Event {
     endRecur: string;
     daysOfWeek: number[];
     extendedProps: {
-        category: 'Sports' | 'Nutrition' | 'Mental health' | 'Sleep' | 'Learning' | 'Work' | 'Finances' | 'Music' | 'Art' | 'Sustainability' | 'Personal growth'
+        category: Categories
     }
 }
 
 export interface Habit {
     _id?: string;
     name: string;
-    category: 'Sports' | 'Nutrition' | 'Mental health' | 'Sleep' | 'Learning' | 'Work' | 'Finances' | 'Music' | 'Art' | 'Sustainability' | 'Personal growth';
+    category: Categories
     frequency: 'Daily' | 'Weekly'; 
     timeOfDay: string; 
     duration: number;
