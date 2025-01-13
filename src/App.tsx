@@ -10,8 +10,10 @@ import AuthLayout from "./layouts/AuthLayout";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
+import useAuthListener from "./hooks/useAuthListener";
 
 function App() {
+  useAuthListener();
   const isLoggedIn = useSelector(
     (state: RootState) => state.user.isAuthenticated
   );
