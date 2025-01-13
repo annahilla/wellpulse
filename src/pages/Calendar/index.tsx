@@ -14,15 +14,16 @@ import { calculateEndTime } from "../../utils/calculateEndTime";
 import useToolbarConfig from "../../hooks/useToolbarConfig";
 import AddHabitForm from "./AddHabitForm";
 import HabitDetails from "./HabitDetails";
+import { FaRegCheckCircle } from "react-icons/fa";
 
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const categoryColors: { [key: string]: string } = {
-  [Categories.Sports]: "bg-blue-300",
-  [Categories.Nutrition]: "bg-emerald-300",
-  [Categories.MentalHealth]: "bg-purple-300",
+  [Categories.Sports]: "bg-blue-200",
+  [Categories.Nutrition]: "bg-emerald-200",
+  [Categories.MentalHealth]: "bg-purple-200",
   [Categories.Learning]: "bg-yellow-200",
-  [Categories.Art]: "bg-amber-400",
+  [Categories.Art]: "bg-amber-300",
 };
 
 const CalendarPage = () => {
@@ -36,7 +37,7 @@ const CalendarPage = () => {
     timeOfDay: "10:00",
     duration: 20,
     date: "",
-    completedDays: []
+    completedDays: [],
   });
   const [newHabit, setNewHabit] = useState<Habit>({
     name: "",
@@ -45,7 +46,7 @@ const CalendarPage = () => {
     timeOfDay: "10:00",
     duration: 20,
     date: "",
-    completedDays: []
+    completedDays: [],
   });
   const { habits } = useTypedSelector((state) => state.habits);
   const dispatch = useDispatch<AppDispatch>();
@@ -83,7 +84,8 @@ const CalendarPage = () => {
       endTime: endTime,
       startRecur: startRecur.toISOString(),
       endRecur: endRecur.toISOString(),
-      daysOfWeek: habit.frequency === "Daily" ? [0, 1, 2, 3, 4, 5, 6] : [dayOfWeek],
+      daysOfWeek:
+        habit.frequency === "Daily" ? [0, 1, 2, 3, 4, 5, 6] : [dayOfWeek],
       extendedProps: {
         category: habit.category,
       },
@@ -104,7 +106,7 @@ const CalendarPage = () => {
 
   useEffect(() => {
     if (habits.length > 0) {
-      setEvents([])
+      setEvents([]);
       habits.map((habit) => createEvent(habit));
     }
   }, [habits]);
@@ -125,8 +127,8 @@ const CalendarPage = () => {
 
     const habitToCreate = {
       ...newHabit,
-      completedDays: []
-  };
+      completedDays: [],
+    };
 
     if (!newHabit.name || newHabit.name.trim() === "") {
       dispatch(setError("Please enter the name of the habit"));
@@ -154,25 +156,25 @@ const CalendarPage = () => {
     }
   };
 
-  const handleDateClick = (arg:any) => {
+  const handleDateClick = (arg: any) => {
     setNewHabit((prevHabit) => ({
       ...prevHabit,
-      date: arg.dateStr, 
+      date: arg.dateStr,
     }));
     openFormModal();
   };
 
   const handleEventClick = (eventInfo: any) => {
     const clickedEvent = eventInfo.event;
-    const habitDetails = habits.find(habit => habit._id === clickedEvent.id);
+    const habitDetails = habits.find((habit) => habit._id === clickedEvent.id);
     if (habitDetails) {
-      const eventDate = clickedEvent.startStr.split('T')[0];
+      const eventDate = clickedEvent.startStr.split("T")[0];
 
       const updatedHabit = {
         ...habitDetails,
-        date: eventDate, 
-    };
-      setSelectedHabit((updatedHabit));
+        eventDate,
+      };
+      setSelectedHabit(updatedHabit);
       openHabitModal();
     }
   };
@@ -182,11 +184,20 @@ const CalendarPage = () => {
     return categoryColors[category] || "bg-gray-300";
   };
 
+  const handleEventMount = (info: any) => {
+    const currentDate = new Date();
+    const eventDate = new Date(info.event.start!);
+
+    if (eventDate < currentDate) {
+      info.el.classList.add("opacity-50");
+    }
+  };
+
   return (
     <div className="mb-12">
       <div className="my-4 flex items-center justify-center md:justify-end">
         <Button
-        isDisabled={false}
+          isDisabled={false}
           handleClick={openFormModal}
           type="primary"
           size="sm"
@@ -208,17 +219,18 @@ const CalendarPage = () => {
           eventClick={handleEventClick}
           dateClick={handleDateClick}
           eventClassNames={eventClassNames}
-          eventContent={renderEventContent}
+          eventContent={(eventInfo) => renderEventContent(eventInfo, habits)}
+          eventDidMount={handleEventMount}
         />
       </div>
-      <AddHabitForm 
+      <AddHabitForm
         isFormModalOpen={isFormModalOpen}
         closeFormModal={closeFormModal}
         createHabitHandler={createHabitHandler}
         handleInputChange={handleInputChange}
         newHabit={newHabit}
       />
-      <HabitDetails 
+      <HabitDetails
         isHabitModalOpen={isHabitModalOpen}
         habit={selectedHabit}
         closeHabitModal={closeHabitModal}
@@ -227,10 +239,19 @@ const CalendarPage = () => {
   );
 };
 
-const renderEventContent = (eventInfo: EventContentArg) => {
+const renderEventContent = (eventInfo: EventContentArg, habits: Habit[]) => {
+  const habit = habits.find((habit) => habit._id === eventInfo.event.id);
+  const eventDate = eventInfo.event.startStr.split("T")[0];
+  const isCompleted = habit?.completedDays.includes(eventDate);
+
   return (
     <>
       <b>{eventInfo.timeText}</b>
+      {isCompleted && (
+        <p className="pl-1">
+          <FaRegCheckCircle />
+        </p>
+      )}
       <p className="px-1">{eventInfo.event.title}</p>
     </>
   );
