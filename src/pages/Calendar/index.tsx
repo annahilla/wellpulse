@@ -20,6 +20,7 @@ import useToolbarConfig from "../../hooks/useToolbarConfig";
 import AddHabitForm from "./AddHabitForm";
 import HabitDetails from "./HabitDetails";
 import { FaRegCheckCircle } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -156,9 +157,11 @@ const CalendarPage = () => {
 
     try {
       await dispatch(createHabit(habitToCreate));
+      toast.success("Habit created successfully!");
       closeFormModal();
     } catch (err) {
       console.error("Error creating habit: ", err);
+      toast.error("There was an error creating the habit.");
     }
   };
 

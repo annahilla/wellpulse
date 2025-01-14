@@ -7,6 +7,7 @@ import { AppDispatch } from "../../redux/store";
 import { ChangeEvent, useEffect, useState } from "react";
 import useHabitOptions from "../../hooks/useHabitOptions";
 import ErrorMessage from "../../components/ui/ErrorMessage";
+import { toast } from "react-toastify";
 
 interface HabitDetailsProps {
   isHabitModalOpen: boolean;
@@ -21,21 +22,15 @@ const HabitDetails = ({
 }: HabitDetailsProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { categories, frequencies } = useHabitOptions();
-  const {
-    name,
-    _id,
-    category,
-    frequency,
-    timeOfDay,
-    duration,
-    eventDate,
-  } = habit;
+  const { name, _id, category, frequency, timeOfDay, duration, eventDate } =
+    habit;
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [updatedHabit, setUpdatedHabit] = useState<HabitDetailsInterface>(habit);
+  const [updatedHabit, setUpdatedHabit] =
+    useState<HabitDetailsInterface>(habit);
   const currentDate = new Date();
-  const eventDateFormatted = new Date (eventDate);
+  const eventDateFormatted = new Date(eventDate);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -75,30 +70,33 @@ const HabitDetails = ({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    
-      if(!error) {
-        try {
-          if (habit && _id !== undefined) {
-            await dispatch(
-              updateHabitAsync({ habitId: _id, habitData: updatedHabit })
-            );
-            closeHabitModal();
-          }
-        } catch (error) {
-          console.error("Error updating habit:", error);
+
+    if (!error) {
+      try {
+        if (habit && _id !== undefined) {
+          await dispatch(
+            updateHabitAsync({ habitId: _id, habitData: updatedHabit })
+          );
+          toast.success("Habit updated successfully!");
+          closeHabitModal();
         }
+      } catch (error) {
+        console.error("Error updating habit:", error);
+        toast.error("There was an error updating the habit.");
       }
-    
-  }
+    }
+  };
 
   const handleDeleteHabit = async () => {
     try {
       if (habit && habit._id !== undefined) {
         await dispatch(deleteHabit(habit._id));
+        toast.success("Habit deleted successfully!");
         closeHabitModal();
       }
     } catch (err) {
       console.error("Error creating habit: ", err);
+      toast.error("There was an error deleting the habit.");
     }
   };
 

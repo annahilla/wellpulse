@@ -11,6 +11,8 @@ import ProtectedRoute from "./utils/ProtectedRoute";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store";
 import useAuthListener from "./hooks/useAuthListener";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   useAuthListener();
@@ -19,24 +21,27 @@ function App() {
   );
 
   return (
-    <Routes>
-      <Route element={<MainLayout />}>
-        <Route index element={<HomePage />} />
-        <Route
-          element={
-            <ProtectedRoute canActivate={isLoggedIn} redirectPath="/login" />
-          }
-        >
-          <Route path="/calendar" element={<CalendarPage />} />
-          <Route path="/map" element={<MapPage />} />
-          <Route path="/progress" element={<ProgressPage />} />
+    <>
+      <ToastContainer position="top-right" autoClose={3000} />
+      <Routes>
+        <Route element={<MainLayout />}>
+          <Route index element={<HomePage />} />
+          <Route
+            element={
+              <ProtectedRoute canActivate={isLoggedIn} redirectPath="/login" />
+            }
+          >
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/map" element={<MapPage />} />
+            <Route path="/progress" element={<ProgressPage />} />
+          </Route>
         </Route>
-      </Route>
-      <Route element={<AuthLayout />}>
-        <Route path="/signup" element={<SignUpPage />} />
-        <Route path="/login" element={<LoginPage />} />
-      </Route>
-    </Routes>
+        <Route element={<AuthLayout />}>
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Route>
+      </Routes>
+    </>
   );
 }
 
