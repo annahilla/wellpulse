@@ -5,7 +5,12 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import { EventContentArg, EventInput } from "@fullcalendar/core/index.js";
 import Button from "../../components/ui/Button";
 import { FormEvent, useEffect, useState } from "react";
-import { Habit, Event, Categories, HabitDetailsInterface } from "../../types/types";
+import {
+  Habit,
+  Event,
+  Categories,
+  HabitDetailsInterface,
+} from "../../types/types";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { createHabit, getHabits } from "../../redux/habitsActions";
@@ -19,11 +24,11 @@ import { FaRegCheckCircle } from "react-icons/fa";
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const categoryColors: { [key: string]: string } = {
-  [Categories.Sports]: "bg-blue-200",
-  [Categories.Nutrition]: "bg-emerald-200",
-  [Categories.MentalHealth]: "bg-purple-200",
-  [Categories.Learning]: "bg-yellow-200",
-  [Categories.Art]: "bg-amber-300",
+  [Categories.Sports]: "bg-lime-400 text-white",
+  [Categories.Nutrition]: "bg-green text-white",
+  [Categories.MentalHealth]: "bg-[#e96f41] text-white",
+  [Categories.Learning]: "bg-yellow text-white",
+  [Categories.Art]: "bg-lime-600 text-white",
 };
 
 const CalendarPage = () => {
@@ -247,7 +252,7 @@ const renderEventContent = (eventInfo: EventContentArg, habits: Habit[]) => {
 
   return (
     <>
-      <b>{eventInfo.timeText}</b>
+      <b className="px-1">{eventInfo.timeText}</b>
       {isCompleted && (
         <p className="pl-1">
           <FaRegCheckCircle />

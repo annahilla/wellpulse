@@ -13,106 +13,120 @@ import LineChart from "../../components/charts/LineChart";
 Chart.register(CategoryScale);
 
 const categoryColors: { [key: string]: string } = {
-    [Categories.Sports]: "rgba(59, 130, 246, 0.6)", 
-    [Categories.Nutrition]: "rgba(16, 185, 129, 0.6)",
-    [Categories.MentalHealth]: "rgba(139, 92, 246, 0.6)",
-    [Categories.Learning]: "rgba(253, 230, 138, 0.6)",
-    [Categories.Art]: "rgba(234, 179, 8, 0.6)"
-}
+  [Categories.Sports]: "#a3e635",
+  [Categories.Nutrition]: "#2E7D32",
+  [Categories.MentalHealth]: "#e96f41",
+  [Categories.Learning]: "#FFC107",
+  [Categories.Art]: "#65a30d",
+};
 
 const ProgressPage = () => {
-    const dispatch = useDispatch<AppDispatch>();
-    const { habits } = useTypedSelector((state) => state.habits);
+  const dispatch = useDispatch<AppDispatch>();
+  const { habits } = useTypedSelector((state) => state.habits);
 
-    const countHabitsByCategory = (habits: Habit[]) => {
-      return habits.reduce((acc: { [key in Categories]: number }, habit) => {
-        acc[habit.category] = (acc[habit.category] || 0) + 1;
-        return acc;
-      }, {} as { [key in Categories]: number }); 
-    };
+  const countHabitsByCategory = (habits: Habit[]) => {
+    return habits.reduce((acc: { [key in Categories]: number }, habit) => {
+      acc[habit.category] = (acc[habit.category] || 0) + 1;
+      return acc;
+    }, {} as { [key in Categories]: number });
+  };
 
-    const getCompletedHabitsPerCategoryAndDate = (habits: Habit[]) => {
-      const categoryDateCount: { [key: string]: { [key: string]: number } } = {};
-  
-      habits.forEach(habit => {
-        habit.completedDays.forEach(date => {
-          if (!categoryDateCount[habit.category]) {
-            categoryDateCount[habit.category] = {};
-          }
-          
-          if (!categoryDateCount[habit.category][date]) {
-            categoryDateCount[habit.category][date] = 1;
-          } else {
-            categoryDateCount[habit.category][date]++;
-          }
-        });
+  const getCompletedHabitsPerCategoryAndDate = (habits: Habit[]) => {
+    const categoryDateCount: { [key: string]: { [key: string]: number } } = {};
+
+    habits.forEach((habit) => {
+      habit.completedDays.forEach((date) => {
+        if (!categoryDateCount[habit.category]) {
+          categoryDateCount[habit.category] = {};
+        }
+
+        if (!categoryDateCount[habit.category][date]) {
+          categoryDateCount[habit.category][date] = 1;
+        } else {
+          categoryDateCount[habit.category][date]++;
+        }
       });
-  
-      return categoryDateCount;
-    };
-  
+    });
 
-  const [habitsByCategoryChartData, setHabitsByCategoryChartData] = useState<any>({
-    labels: [],
-    datasets: []
-  });
+    return categoryDateCount;
+  };
 
-  const [completedHabitsChartData, setCompletedHabitsChartData] = useState<any>({
-    labels: [], 
-    datasets: [],
-  });
+  const [habitsByCategoryChartData, setHabitsByCategoryChartData] =
+    useState<any>({
+      labels: [],
+      datasets: [],
+    });
+
+  const [completedHabitsChartData, setCompletedHabitsChartData] = useState<any>(
+    {
+      labels: [],
+      datasets: [],
+    }
+  );
 
   useEffect(() => {
-      dispatch(getHabits());
-    }, [dispatch]);
+    dispatch(getHabits());
+  }, [dispatch]);
 
-    useEffect(() => {
-        if (habits.length > 0) {
-          const habitsByCategory = countHabitsByCategory(habits);
-          const categories = Object.keys(habitsByCategory);
-          const habitCounts = Object.values(habitsByCategory);
-          const categoryDateCounts = getCompletedHabitsPerCategoryAndDate(habits);
+  useEffect(() => {
+    if (habits.length > 0) {
+      const habitsByCategory = countHabitsByCategory(habits);
+      const categories = Object.keys(habitsByCategory);
+      const habitCounts = Object.values(habitsByCategory);
+      const categoryDateCounts = getCompletedHabitsPerCategoryAndDate(habits);
 
-          const backgroundColors = categories.map(
-            (category) => categoryColors[category] || "rgba(0,0,0,0.6)"
-          );
-          
-          const last10Days = getLastNDays(10); 
-          
-          const datasets = categories.map((category) => {
-            const categoryData = last10Days.map(date => categoryDateCounts[category] && categoryDateCounts[category][date] ? categoryDateCounts[category][date] : 0);
-            
-            return {
-              label: category,
-              data: categoryData,
-              backgroundColor: categoryColors[category],
-              borderColor: categoryColors[category],
-              fill: false,
-              tension: 0.1,
-            };
-          });
+      const backgroundColors = categories.map(
+        (category) => categoryColors[category] || "rgba(0,0,0,0.6)"
+      );
 
-          setHabitsByCategoryChartData({
-            labels: categories,
-            datasets: [
-              {
-                data: habitCounts,
-                backgroundColor: backgroundColors
-              }
-            ]
-          });
+      const last10Days = getLastNDays(10);
 
-          setCompletedHabitsChartData({
-            labels: last10Days,
-            datasets: datasets,
-          })
-        }
-      }, [habits]);
+      const datasets = categories.map((category) => {
+        const categoryData = last10Days.map((date) =>
+          categoryDateCounts[category] && categoryDateCounts[category][date]
+            ? categoryDateCounts[category][date]
+            : 0
+        );
+
+        return {
+          label: category,
+          data: categoryData,
+          backgroundColor: categoryColors[category],
+          borderColor: categoryColors[category],
+          fill: false,
+          tension: 0.1,
+        };
+      });
+
+      setHabitsByCategoryChartData({
+        labels: categories,
+        datasets: [
+          {
+            data: habitCounts,
+            backgroundColor: backgroundColors,
+          },
+        ],
+      });
+
+      setCompletedHabitsChartData({
+        labels: last10Days,
+        datasets: datasets,
+      });
+    }
+  }, [habits]);
 
   return (
     <div className="grid grid-cols-2 items-center gap-10 my-10 w-2/3 m-auto">
-        <PieChart title="Habits by Category" subtitle="Number of habits scheduled by category" chartData={habitsByCategoryChartData} />
-        <LineChart title="Completion of Habits By Category" subtitle="Habits completed per category over the last 10 days" chartData={completedHabitsChartData} />
+      <PieChart
+        title="Habits by Category"
+        subtitle="Number of habits scheduled by category"
+        chartData={habitsByCategoryChartData}
+      />
+      <LineChart
+        title="Completion of Habits By Category"
+        subtitle="Habits completed per category over the last 10 days"
+        chartData={completedHabitsChartData}
+      />
     </div>
   );
 };
