@@ -1,15 +1,16 @@
 import Modal from "../../components/ui/Modal";
-import { Habit } from "../../types/types";
+import { HabitDetailsInterface } from "../../types/types";
 import Button from "../../components/ui/Button";
 import { useDispatch } from "react-redux";
 import { deleteHabit, updateHabitAsync } from "../../redux/habitsActions";
 import { AppDispatch } from "../../redux/store";
 import { ChangeEvent, useEffect, useState } from "react";
 import useHabitOptions from "../../hooks/useHabitOptions";
+import ErrorMessage from "../../components/ui/ErrorMessage";
 
 interface HabitDetailsProps {
   isHabitModalOpen: boolean;
-  habit: Habit;
+  habit: HabitDetailsInterface;
   closeHabitModal: () => void;
 }
 
@@ -27,12 +28,14 @@ const HabitDetails = ({
     frequency,
     timeOfDay,
     duration,
-    date,
     eventDate,
   } = habit;
 
-  const [updatedHabit, setUpdatedHabit] = useState<Habit>(habit);
-  console.log(JSON.stringify(habit));
+  const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [updatedHabit, setUpdatedHabit] = useState<HabitDetailsInterface>(habit);
+  const currentDate = new Date();
+  const eventDateFormatted = new Date (eventDate);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -46,6 +49,17 @@ const HabitDetails = ({
 
   const handleCompletionChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked } = event.target;
+
+    if (!checked) {
+      setError(false);
+    } else {
+      if (eventDateFormatted > currentDate) {
+        setError(true);
+        setErrorMessage("You can't complete an event in the future");
+      } else {
+        setError(false);
+      }
+    }
 
     setUpdatedHabit((prevHabit) => {
       const newCompletedDays = checked
@@ -61,17 +75,21 @@ const HabitDetails = ({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    try {
-      if (habit && _id !== undefined) {
-        await dispatch(
-          updateHabitAsync({ habitId: _id, habitData: updatedHabit })
-        );
-        closeHabitModal();
+    
+      if(!error) {
+        try {
+          if (habit && _id !== undefined) {
+            await dispatch(
+              updateHabitAsync({ habitId: _id, habitData: updatedHabit })
+            );
+            closeHabitModal();
+          }
+        } catch (error) {
+          console.error("Error updating habit:", error);
+        }
       }
-    } catch (error) {
-      console.error("Error updating habit:", error);
-    }
-  };
+    
+  }
 
   const handleDeleteHabit = async () => {
     try {
@@ -182,6 +200,7 @@ const HabitDetails = ({
               disabled
             />
           </div>
+          {error && <ErrorMessage text={errorMessage} />}
           <div className="flex items-center m-auto gap-6 mt-7">
             <Button
               isDisabled={false}

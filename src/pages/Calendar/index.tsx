@@ -5,7 +5,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import { EventContentArg, EventInput } from "@fullcalendar/core/index.js";
 import Button from "../../components/ui/Button";
 import { FormEvent, useEffect, useState } from "react";
-import { Habit, Event, Categories } from "../../types/types";
+import { Habit, Event, Categories, HabitDetailsInterface } from "../../types/types";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { createHabit, getHabits } from "../../redux/habitsActions";
@@ -30,13 +30,14 @@ const CalendarPage = () => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
   const [events, setEvents] = useState<EventInput[]>([]);
-  const [selectedHabit, setSelectedHabit] = useState<Habit>({
+  const [selectedHabit, setSelectedHabit] = useState<HabitDetailsInterface>({
     name: "",
     category: Categories.Sports,
     frequency: "Daily",
     timeOfDay: "10:00",
     duration: 20,
     date: "",
+    eventDate: "",
     completedDays: [],
   });
   const [newHabit, setNewHabit] = useState<Habit>({

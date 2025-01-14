@@ -29,3 +29,15 @@ export interface Habit {
     date: string;
     completedDays: string[];
 }
+
+export interface HabitDetailsInterface {
+    _id?: string;
+    name: string;
+    category: Categories
+    frequency: 'Daily' | 'Weekly'; 
+    timeOfDay: string; 
+    duration: number;
+    date: string;
+    eventDate:string;
+    completedDays: string[];
+}
