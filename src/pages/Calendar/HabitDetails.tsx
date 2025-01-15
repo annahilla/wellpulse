@@ -22,8 +22,7 @@ const HabitDetails = ({
 }: HabitDetailsProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { categories, frequencies } = useHabitOptions();
-  const { name, _id, category, frequency, timeOfDay, duration, eventDate } =
-    habit;
+  const { _id, eventDate } = habit;
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -74,7 +73,7 @@ const HabitDetails = ({
     if (!error) {
       try {
         if (habit && _id !== undefined) {
-          console.log(updatedHabit)
+          console.log(updatedHabit);
           await dispatch(
             updateHabitAsync({ habitId: _id, habitData: updatedHabit })
           );

@@ -238,6 +238,8 @@ const CalendarPage = () => {
             },
             timeGridWeek: {
               dayHeaderFormat: { weekday: "short" },
+              slotMinTime: "06:00:00",
+              slotMaxTime: "23:00:00",
             },
           }}
         />
@@ -264,15 +266,17 @@ const renderEventContent = (eventInfo: EventContentArg, habits: Habit[]) => {
   const isCompleted = habit?.completedDays.includes(eventDate);
 
   return (
-    <>
+    <div>
       <b className="px-1">{eventInfo.timeText}</b>
-      {isCompleted && (
-        <p className="pl-1">
-          <FaRegCheckCircle />
-        </p>
-      )}
-      <p className="px-1">{eventInfo.event.title}</p>
-    </>
+      <div className="flex items-center">
+        {isCompleted && (
+          <p className="pl-1">
+            <FaRegCheckCircle />
+          </p>
+        )}
+        <p className="px-1">{eventInfo.event.title}</p>
+      </div>
+    </div>
   );
 };
 

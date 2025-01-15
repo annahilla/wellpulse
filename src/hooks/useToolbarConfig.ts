@@ -9,6 +9,13 @@ const useToolbarConfig = () => {
                 right: "",
                 initialView: "timeGridDay"
             };
+        } else if(window.innerWidth < 1300){
+            return {
+                left: "prev,next today",
+                center: "title",
+                right: "dayGridMonth,timeGridWeek,timeGridDay",
+                initialView: "timeGridWeek"
+            };
         } else {
             return {
                 left: "prev,next today",
