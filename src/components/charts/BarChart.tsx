@@ -19,18 +19,22 @@ function BarChart({ chartData, title, subtitle } : BarChartProps) {
                 display: true,
                 text: subtitle,
               },
+              legend: {
+                display: false,
+              }
             },
             scales: {
               y: {
                 beginAtZero: true,
-                min: 0,
-                max: 10,
                 ticks: {
                   stepSize: 1,
                   precision: 0,
                 },
               },
             },
+            responsive: true,
+            maintainAspectRatio:true,
+            aspectRatio: 1/1
           }} 
       />
     </div>

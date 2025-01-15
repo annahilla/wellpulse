@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Chart from "chart.js/auto";
-import { CategoryScale } from "chart.js";
+import { CategoryScale, ChartData } from "chart.js";
 import PieChart from "../../components/charts/PieChart";
 import { Categories, Habit } from "../../types/types";
 import { useDispatch } from "react-redux";
@@ -9,6 +9,7 @@ import { AppDispatch } from "../../redux/store";
 import { useTypedSelector } from "../Calendar";
 import { getLastNDays } from "../../utils/getLastNDays";
 import LineChart from "../../components/charts/LineChart";
+import BarChart from "../../components/charts/BarChart";
 
 Chart.register(CategoryScale);
 
@@ -52,17 +53,24 @@ const ProgressPage = () => {
   };
 
   const [habitsByCategoryChartData, setHabitsByCategoryChartData] =
-    useState<any>({
+    useState<ChartData<'pie'>>({
       labels: [],
       datasets: [],
     });
 
-  const [completedHabitsChartData, setCompletedHabitsChartData] = useState<any>(
+  const [completedHabitsChartData, setCompletedHabitsChartData] = useState<ChartData<'line'>>(
     {
       labels: [],
       datasets: [],
     }
   );
+
+  const [totalCompletedHabitsByCategory, setTotalCompletedHabitsByCategory] = useState<ChartData<'bar'>>(
+    {
+      labels: [],
+      datasets: [],
+    }
+  )
 
   useEffect(() => {
     dispatch(getHabits());
@@ -79,9 +87,19 @@ const ProgressPage = () => {
         (category) => categoryColors[category] || "rgba(0,0,0,0.6)"
       );
 
+      setHabitsByCategoryChartData({
+        labels: categories,
+        datasets: [
+          {
+            data: habitCounts,
+            backgroundColor: backgroundColors,
+          },
+        ],
+      });
+
       const last10Days = getLastNDays(10);
 
-      const datasets = categories.map((category) => {
+      const habitsLast10Days = categories.map((category) => {
         const categoryData = last10Days.map((date) =>
           categoryDateCounts[category] && categoryDateCounts[category][date]
             ? categoryDateCounts[category][date]
@@ -98,19 +116,23 @@ const ProgressPage = () => {
         };
       });
 
-      setHabitsByCategoryChartData({
-        labels: categories,
-        datasets: [
-          {
-            data: habitCounts,
-            backgroundColor: backgroundColors,
-          },
-        ],
-      });
-
       setCompletedHabitsChartData({
         labels: last10Days,
-        datasets: datasets,
+        datasets: habitsLast10Days,
+      });
+
+      const completedPerCategory = categories.map((category) => {
+        const totalCount = categoryDateCounts[category] === undefined ? 0 : Object.values(categoryDateCounts[category]).reduce((a, b) => a + b, 0);
+
+        return totalCount;
+      });
+
+      setTotalCompletedHabitsByCategory({
+        labels: categories,
+        datasets: [{
+          data: completedPerCategory,
+          backgroundColor: backgroundColors
+        }]
       });
     }
   }, [habits]);
@@ -118,14 +140,19 @@ const ProgressPage = () => {
   return (
     <div className="grid grid-cols-1 items-center gap-20 my-10 w-2/3 m-auto md:grid-cols-2 md:gap-10">
       <PieChart
-        title="Habits by Category"
+        title="Habits scheduled by Category"
         subtitle="Number of habits scheduled by category"
         chartData={habitsByCategoryChartData}
       />
       <LineChart
-        title="Completion of Habits By Category"
+        title="Completion of Habits"
         subtitle="Habits completed per category over the last 10 days"
         chartData={completedHabitsChartData}
+      />
+      <BarChart 
+        title="Habits completed by Category"
+        subtitle="Total of habits completed by category"
+        chartData={totalCompletedHabitsByCategory}
       />
     </div>
   );
