@@ -43,6 +43,10 @@ fc-button:hover {
     box-shadow: none !important;
 }
 
+.fc-timegrid-slot {
+    height: 4.5rem !important;
+}
+
 @media (max-width: 768px) {
     .fc {
         height: auto !important;
@@ -76,11 +80,8 @@ fc-button:hover {
         font-size: 0.8rem !important;
     }
 
-    .fc-day {
-        padding: 1rem !important;
-    }
-
     .fc-timegrid-axis-cushion {
         font-size: 0.8rem;
     }
+
 }

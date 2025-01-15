@@ -25,7 +25,7 @@ import { toast } from "react-toastify";
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const categoryColors: { [key: string]: string } = {
-  [Categories.Sports]: "bg-lime-400 text-white",
+  [Categories.Sports]: "bg-lime-500 text-white",
   [Categories.Nutrition]: "bg-green text-white",
   [Categories.MentalHealth]: "bg-[#e96f41] text-white",
   [Categories.Learning]: "bg-yellow text-white",
@@ -218,8 +218,9 @@ const CalendarPage = () => {
       <div>
         <FullCalendar
           plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+          key={toolbarConfig.initialView}
           headerToolbar={toolbarConfig}
-          initialView="dayGridMonth"
+          initialView={toolbarConfig.initialView}
           editable={true}
           selectable={true}
           selectMirror={true}
@@ -230,6 +231,15 @@ const CalendarPage = () => {
           eventClassNames={eventClassNames}
           eventContent={(eventInfo) => renderEventContent(eventInfo, habits)}
           eventDidMount={handleEventMount}
+          views={{
+            timeGridDay: {
+              minTime: "06:00:00",
+              maxTime: "23:00:00",
+            },
+            timeGridWeek: {
+              dayHeaderFormat: { weekday: "short" },
+            },
+          }}
         />
       </div>
       <AddHabitForm

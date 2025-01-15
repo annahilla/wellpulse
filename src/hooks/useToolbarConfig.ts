@@ -7,12 +7,14 @@ const useToolbarConfig = () => {
                 left: "title prev,next",
                 center: "timeGridDay",
                 right: "",
+                initialView: "timeGridDay"
             };
         } else {
             return {
                 left: "prev,next today",
                 center: "title",
                 right: "dayGridMonth,timeGridWeek,timeGridDay",
+                initialView: "dayGridMonth",
             };
         }
     };
@@ -24,6 +26,8 @@ const useToolbarConfig = () => {
             setToolbarConfig(getToolbarConfig());
         };
         window.addEventListener("resize", handleResize);
+
+        handleResize();
 
         return () => window.removeEventListener("resize", handleResize);
     }, []);

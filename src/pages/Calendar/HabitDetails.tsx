@@ -74,6 +74,7 @@ const HabitDetails = ({
     if (!error) {
       try {
         if (habit && _id !== undefined) {
+          console.log(updatedHabit)
           await dispatch(
             updateHabitAsync({ habitId: _id, habitData: updatedHabit })
           );
