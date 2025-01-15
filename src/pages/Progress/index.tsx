@@ -25,6 +25,30 @@ const ProgressPage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { habits } = useTypedSelector((state) => state.habits);
 
+  const [habitsByCategoryChartData, setHabitsByCategoryChartData] = useState<
+    ChartData<"pie">
+  >({
+    labels: [],
+    datasets: [],
+  });
+
+  const [completedHabitsChartData, setCompletedHabitsChartData] = useState<
+    ChartData<"line">
+  >({
+    labels: [],
+    datasets: [],
+  });
+
+  const [totalCompletedHabitsByCategory, setTotalCompletedHabitsByCategory] =
+    useState<ChartData<"bar">>({
+      labels: [],
+      datasets: [],
+    });
+
+  const [habitPieCharts, setHabitPieCharts] = useState<
+    { habitName: string; chartData: ChartData<"pie"> }[]
+  >([]);
+
   const countHabitsByCategory = (habits: Habit[]) => {
     return habits.reduce((acc: { [key in Categories]: number }, habit) => {
       acc[habit.category] = (acc[habit.category] || 0) + 1;
@@ -60,33 +84,32 @@ const ProgressPage = () => {
     const totalEvents = Math.floor(diffInTime / (1000 * 3600 * 24));
     console.log(habit.name, totalEvents);
     return totalEvents;
-  }
+  };
 
- useEffect(()=> {
-  habits.map(habit => {
-    return totalEventsByHabit(habit);
-  })
- }, [habits])
+  const calculatePieChartData = (habit: Habit) => {
+    const totalEvents = totalEventsByHabit(habit);
+    const completedEvents = habit.completedDays.length;
+    const uncompletedEvents = totalEvents - completedEvents;
 
-  const [habitsByCategoryChartData, setHabitsByCategoryChartData] =
-    useState<ChartData<'pie'>>({
-      labels: [],
-      datasets: [],
-    });
+    const categoryColor = categoryColors[habit.category] || "#000000"; // Default color if category is missing
+    const uncompletedColor = `rgba(${parseInt(
+      categoryColor.slice(1, 3),
+      16
+    )}, ${parseInt(categoryColor.slice(3, 5), 16)}, ${parseInt(
+      categoryColor.slice(5, 7),
+      16
+    )}, 0.3)`; // Lightened version
 
-  const [completedHabitsChartData, setCompletedHabitsChartData] = useState<ChartData<'line'>>(
-    {
-      labels: [],
-      datasets: [],
-    }
-  );
-
-  const [totalCompletedHabitsByCategory, setTotalCompletedHabitsByCategory] = useState<ChartData<'bar'>>(
-    {
-      labels: [],
-      datasets: [],
-    }
-  )
+    return {
+      labels: ["Completed Events", "Uncompleted Events"],
+      datasets: [
+        {
+          data: [completedEvents, uncompletedEvents],
+          backgroundColor: [categoryColor, uncompletedColor],
+        },
+      ],
+    };
+  };
 
   useEffect(() => {
     dispatch(getHabits());
@@ -138,23 +161,37 @@ const ProgressPage = () => {
       });
 
       const completedPerCategory = categories.map((category) => {
-        const totalCount = categoryDateCounts[category] === undefined ? 0 : Object.values(categoryDateCounts[category]).reduce((a, b) => a + b, 0);
+        const totalCount =
+          categoryDateCounts[category] === undefined
+            ? 0
+            : Object.values(categoryDateCounts[category]).reduce(
+                (a, b) => a + b,
+                0
+              );
 
         return totalCount;
       });
 
       setTotalCompletedHabitsByCategory({
         labels: categories,
-        datasets: [{
-          data: completedPerCategory,
-          backgroundColor: backgroundColors
-        }]
+        datasets: [
+          {
+            data: completedPerCategory,
+            backgroundColor: backgroundColors,
+          },
+        ],
       });
+
+      const habitCharts = habits.map((habit) => ({
+        habitName: habit.name,
+        chartData: calculatePieChartData(habit),
+      }));
+      setHabitPieCharts(habitCharts);
     }
   }, [habits]);
 
   return (
-    <div className="grid grid-cols-1 items-center gap-20 my-10 w-2/3 m-auto md:grid-cols-2 md:gap-10">
+    <div className="mx-10 grid grid-cols-1 items-center gap-20 my-10 m-auto md:grid-cols-2 md:gap-10 lg:grid-cols-3">
       <PieChart
         title="Habits scheduled by Category"
         subtitle="Number of habits scheduled by category"
@@ -165,11 +202,19 @@ const ProgressPage = () => {
         subtitle="Habits completed per category over the last 10 days"
         chartData={completedHabitsChartData}
       />
-      <BarChart 
+      <BarChart
         title="Habits completed by Category"
         subtitle="Total of habits completed by category"
         chartData={totalCompletedHabitsByCategory}
       />
+      {habitPieCharts.map(({ habitName, chartData }, index) => (
+        <PieChart
+          key={index}
+          title={habitName}
+          subtitle={`Progress for ${habitName}`}
+          chartData={chartData}
+        />
+      ))}
     </div>
   );
 };
