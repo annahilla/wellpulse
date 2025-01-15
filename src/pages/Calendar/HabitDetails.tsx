@@ -124,7 +124,7 @@ const HabitDetails = ({
               type="text"
               onChange={handleChange}
               className="border inputx-12 px-4 py-1 rounded"
-              value={name}
+              value={updatedHabit.name}
             />
           </div>
           <div className="flex items-center gap-4">
@@ -133,7 +133,7 @@ const HabitDetails = ({
               onChange={handleChange}
               className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
               name="category"
-              value={category}
+              value={updatedHabit.category}
               required
             >
               {categories.length > 0 &&
@@ -150,7 +150,7 @@ const HabitDetails = ({
               onChange={handleChange}
               className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
               name="frequency"
-              value={frequency}
+              value={updatedHabit.frequency}
               required
             >
               {frequencies.length > 0 &&
@@ -168,7 +168,7 @@ const HabitDetails = ({
               type="time"
               onChange={handleChange}
               className="border inputx-12 px-4 py-1 rounded"
-              value={timeOfDay}
+              value={updatedHabit.timeOfDay}
             />
           </div>
           <div className="flex items-center gap-4">
@@ -179,7 +179,7 @@ const HabitDetails = ({
                 className="px-5 py-2"
                 name="duration"
                 type="number"
-                value={duration}
+                value={updatedHabit.duration}
                 required
               />
               <span className="absolute text-sm right-0 px-5 py-2 border-l">
