@@ -31,6 +31,9 @@ function LineChart({ chartData, title, subtitle }: LineChartProps) {
               },
             },
           },
+          responsive: true,
+          maintainAspectRatio:true,
+          aspectRatio: 1/1
         }}
       />
     </div>

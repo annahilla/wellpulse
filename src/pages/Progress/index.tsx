@@ -116,7 +116,7 @@ const ProgressPage = () => {
   }, [habits]);
 
   return (
-    <div className="grid grid-cols-2 items-center gap-10 my-10 w-2/3 m-auto">
+    <div className="grid grid-cols-1 items-center gap-20 my-10 w-2/3 m-auto md:grid-cols-2 md:gap-10">
       <PieChart
         title="Habits by Category"
         subtitle="Number of habits scheduled by category"

@@ -233,8 +233,8 @@ const CalendarPage = () => {
           eventDidMount={handleEventMount}
           views={{
             timeGridDay: {
-              minTime: "06:00:00",
-              maxTime: "23:00:00",
+              slotMinTime: "06:00:00",
+              slotMaxTime: "23:00:00",
             },
             timeGridWeek: {
               dayHeaderFormat: { weekday: "short" },
