@@ -52,6 +52,22 @@ const ProgressPage = () => {
     return categoryDateCount;
   };
 
+  const totalEventsByHabit = (habit: Habit) => {
+    const startDate = new Date(habit.date);
+    const currentDate = new Date();
+
+    const diffInTime = currentDate.getTime() - startDate.getTime();
+    const totalEvents = Math.floor(diffInTime / (1000 * 3600 * 24));
+    console.log(habit.name, totalEvents);
+    return totalEvents;
+  }
+
+ useEffect(()=> {
+  habits.map(habit => {
+    return totalEventsByHabit(habit);
+  })
+ }, [habits])
+
   const [habitsByCategoryChartData, setHabitsByCategoryChartData] =
     useState<ChartData<'pie'>>({
       labels: [],
