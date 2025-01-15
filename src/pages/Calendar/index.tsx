@@ -1,8 +1,14 @@
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction";
+import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import { EventContentArg, EventInput } from "@fullcalendar/core/index.js";
+import {
+  DateSelectArg,
+  EventClickArg,
+  EventContentArg,
+  EventInput,
+  EventMountArg,
+} from "@fullcalendar/core/index.js";
 import Button from "../../components/ui/Button";
 import { FormEvent, useEffect, useState } from "react";
 import {
@@ -165,7 +171,7 @@ const CalendarPage = () => {
     }
   };
 
-  const handleDateClick = (arg: any) => {
+  const handleDateClick = (arg: DateClickArg) => {
     setNewHabit((prevHabit) => ({
       ...prevHabit,
       date: arg.dateStr,
@@ -173,7 +179,21 @@ const CalendarPage = () => {
     openFormModal();
   };
 
-  const handleEventClick = (eventInfo: any) => {
+  const handleTimeSlotClick = (arg: DateSelectArg) => {
+    const time = arg.start.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    setNewHabit((prevHabit) => ({
+      ...prevHabit,
+      timeOfDay: time,
+    }));
+
+    openFormModal();
+  };
+
+  const handleEventClick = (eventInfo: EventClickArg) => {
     const clickedEvent = eventInfo.event;
     const habitDetails = habits.find((habit) => habit._id === clickedEvent.id);
     if (habitDetails) {
@@ -188,12 +208,12 @@ const CalendarPage = () => {
     }
   };
 
-  const eventClassNames = (eventInfo: any) => {
+  const eventClassNames = (eventInfo: EventContentArg) => {
     const category = eventInfo.event.extendedProps?.category;
     return categoryColors[category] || "bg-gray-300";
   };
 
-  const handleEventMount = (info: any) => {
+  const handleEventMount = (info: EventMountArg) => {
     const currentDate = new Date();
     const eventDate = new Date(info.event.start!);
 
@@ -217,6 +237,7 @@ const CalendarPage = () => {
       </div>
       <div>
         <FullCalendar
+          timeZone="local"
           plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
           key={toolbarConfig.initialView}
           headerToolbar={toolbarConfig}
@@ -228,6 +249,7 @@ const CalendarPage = () => {
           events={events}
           eventClick={handleEventClick}
           dateClick={handleDateClick}
+          select={handleTimeSlotClick}
           eventClassNames={eventClassNames}
           eventContent={(eventInfo) => renderEventContent(eventInfo, habits)}
           eventDidMount={handleEventMount}

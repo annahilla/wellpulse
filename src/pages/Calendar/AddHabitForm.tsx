@@ -25,6 +25,7 @@ const AddHabitForm = ({
 }: AddHabitFormProps) => {
   const { categories, frequencies } = useHabitOptions();
   const { error } = useTypedSelector((state) => state.habits);
+  const date = newHabit.date.split("T")[0];
 
   return (
     <Modal isOpen={isFormModalOpen} closeModal={closeFormModal}>
@@ -121,7 +122,7 @@ const AddHabitForm = ({
             className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
             name="date"
             type="date"
-            value={newHabit.date}
+            value={date}
             required
           />
         </div>
