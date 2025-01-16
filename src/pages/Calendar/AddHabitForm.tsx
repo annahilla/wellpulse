@@ -3,8 +3,10 @@ import Modal from "../../components/ui/Modal";
 import { Habit } from "../../types/types";
 import Button from "../../components/ui/Button";
 import ErrorMessage from "../../components/ui/ErrorMessage";
-import { useTypedSelector } from ".";
 import useHabitOptions from "../../hooks/useHabitOptions";
+import { RootState } from "../../redux/store";
+import { useSelector } from "react-redux";
+import useFormValidation from "../../hooks/useFormValidation";
 
 interface AddHabitFormProps {
   isFormModalOpen: boolean;
@@ -24,14 +26,25 @@ const AddHabitForm = ({
   handleInputChange,
 }: AddHabitFormProps) => {
   const { categories, frequencies } = useHabitOptions();
-  const { error } = useTypedSelector((state) => state.habits);
+  const { formErrors, validateForm } = useFormValidation(newHabit);
+  const error  = useSelector((state: RootState) => state.habits.error);
   const date = newHabit.date.split("T")[0];
 
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    await createHabitHandler(event);
+  };
+ 
   return (
     <Modal isOpen={isFormModalOpen} closeModal={closeFormModal}>
       <h3 className="text-2xl text-center font-bold mb-4">Add a new habit</h3>
       <form
-        onSubmit={createHabitHandler}
+        onSubmit={handleSubmit}
         className="flex flex-col gap-5 my-6"
         noValidate
       >
@@ -46,6 +59,7 @@ const AddHabitForm = ({
             value={newHabit.name}
             required
           />
+          {formErrors.name && <ErrorMessage text={formErrors.name} />}
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="category">
@@ -65,6 +79,7 @@ const AddHabitForm = ({
                 </option>
               ))}
           </select>
+          {formErrors.category && <ErrorMessage text={formErrors.category} />}
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="frequency">How often would you like to do it?</label>
@@ -82,6 +97,7 @@ const AddHabitForm = ({
                 </option>
               ))}
           </select>
+          {formErrors.frequency && <ErrorMessage text={formErrors.frequency} />}
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="timeOfDay">
@@ -95,6 +111,7 @@ const AddHabitForm = ({
             value={newHabit.timeOfDay}
             required
           />
+          {formErrors.timeOfDay && <ErrorMessage text={formErrors.timeOfDay} />}
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="duration">
@@ -114,6 +131,7 @@ const AddHabitForm = ({
               minutes
             </span>
           </div>
+          {formErrors.duration && <ErrorMessage text={formErrors.duration} />}
         </div>
         <div className="flex flex-col gap-2">
           <label htmlFor="date">When do you want to start this habit?</label>
@@ -125,6 +143,7 @@ const AddHabitForm = ({
             value={date}
             required
           />
+          {formErrors.date && <ErrorMessage text={formErrors.date} />}
         </div>
         <Button
           isDisabled={error ? true : false}

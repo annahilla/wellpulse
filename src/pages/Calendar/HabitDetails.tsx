@@ -8,6 +8,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import useHabitOptions from "../../hooks/useHabitOptions";
 import ErrorMessage from "../../components/ui/ErrorMessage";
 import { toast } from "react-toastify";
+import useFormValidation from "../../hooks/useFormValidation";
 
 interface HabitDetailsProps {
   isHabitModalOpen: boolean;
@@ -21,13 +22,14 @@ const HabitDetails = ({
   closeHabitModal,
 }: HabitDetailsProps) => {
   const dispatch = useDispatch<AppDispatch>();
+  const [updatedHabit, setUpdatedHabit] = useState<HabitDetailsInterface>(habit);
   const { categories, frequencies } = useHabitOptions();
+  const { formErrors, validateForm } = useFormValidation(updatedHabit);
   const { _id, eventDate } = habit;
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [updatedHabit, setUpdatedHabit] =
-    useState<HabitDetailsInterface>(habit);
+  
   const currentDate = new Date();
   const eventDateFormatted = new Date(eventDate);
 
@@ -70,10 +72,13 @@ const HabitDetails = ({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
+    if (!validateForm()) {
+      return;
+    }
+
     if (!error) {
       try {
         if (habit && _id !== undefined) {
-          console.log(updatedHabit);
           await dispatch(
             updateHabitAsync({ habitId: _id, habitData: updatedHabit })
           );
@@ -117,7 +122,9 @@ const HabitDetails = ({
             />
             <p className="font-bold">Completed</p>
           </div>
-          <div className="flex items-center gap-4">
+          {error && <ErrorMessage text={errorMessage} />}
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-4">
             <p className="font-bold">Name:</p>
             <input
               name="name"
@@ -126,8 +133,11 @@ const HabitDetails = ({
               className="border inputx-12 px-4 py-1 rounded"
               value={updatedHabit.name}
             />
+            </div>
+            {formErrors.name && <ErrorMessage text={formErrors.name} />}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-4">
             <p className="font-bold">Category:</p>
             <select
               onChange={handleChange}
@@ -143,8 +153,11 @@ const HabitDetails = ({
                   </option>
                 ))}
             </select>
+            </div>
+            {formErrors.category && <ErrorMessage text={formErrors.category} />}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-4">
             <p className="font-bold">Frequency:</p>
             <select
               onChange={handleChange}
@@ -160,8 +173,11 @@ const HabitDetails = ({
                   </option>
                 ))}
             </select>
+            </div>
+            {formErrors.frequency && <ErrorMessage text={formErrors.frequency} />}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-4">
             <p className="font-bold">Time:</p>
             <input
               name="timeOfDay"
@@ -170,11 +186,14 @@ const HabitDetails = ({
               className="border inputx-12 px-4 py-1 rounded"
               value={updatedHabit.timeOfDay}
             />
+            </div>
+            {formErrors.timeOfDay && <ErrorMessage text={formErrors.timeOfDay} />}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-4">
             <p className="font-bold">Duration:</p>
             <div className="flex items-center relative border inputx-12 rounded">
-              <input
+            <input
                 onChange={handleChange}
                 className="px-5 py-2"
                 name="duration"
@@ -186,6 +205,8 @@ const HabitDetails = ({
                 minutes
               </span>
             </div>
+            </div>
+            {formErrors.duration && <ErrorMessage text={formErrors.duration} />}
           </div>
           <div className="flex items-center gap-4">
             <p className="font-bold">Date:</p>
@@ -198,7 +219,6 @@ const HabitDetails = ({
               disabled
             />
           </div>
-          {error && <ErrorMessage text={errorMessage} />}
           <div className="flex items-center m-auto gap-6 mt-7">
             <Button
               isDisabled={false}
