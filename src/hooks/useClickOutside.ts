@@ -6,8 +6,8 @@ const useClickOutside = (ref: RefObject<HTMLElement>, callback: () => void, excl
         const handleClickOutside = (event: MouseEvent) => {
           if (
             ref.current &&
-            !ref.current.contains(event.target as Node)&&
-            (excludeRef?.current && !excludeRef.current.contains(event.target as Node))
+            !ref.current.contains(event.target as Node) &&
+            (!excludeRef || excludeRef?.current && !excludeRef.current.contains(event.target as Node))
           ) {
             callback();
           }
@@ -17,7 +17,7 @@ const useClickOutside = (ref: RefObject<HTMLElement>, callback: () => void, excl
         return () => {
           document.removeEventListener("mousedown", handleClickOutside);
         };
-      }, [callback]);
+      }, [callback, excludeRef]);
 }
 
 export default useClickOutside;
