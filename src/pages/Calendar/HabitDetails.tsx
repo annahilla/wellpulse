@@ -77,8 +77,8 @@ const HabitDetails = ({
           await dispatch(
             updateHabitAsync({ habitId: _id, habitData: updatedHabit })
           );
-          toast.success("Habit updated successfully!");
           closeHabitModal();
+          toast.success("Habit updated successfully!");
         }
       } catch (error) {
         console.error("Error updating habit:", error);
@@ -91,8 +91,8 @@ const HabitDetails = ({
     try {
       if (habit && habit._id !== undefined) {
         await dispatch(deleteHabit(habit._id));
-        toast.success("Habit deleted successfully!");
         closeHabitModal();
+        toast.success("Habit deleted successfully!");
       }
     } catch (err) {
       console.error("Error creating habit: ", err);

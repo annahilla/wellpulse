@@ -242,7 +242,7 @@ const CalendarPage = () => {
           key={toolbarConfig.initialView}
           headerToolbar={toolbarConfig}
           initialView={toolbarConfig.initialView}
-          editable={true}
+          editable={false}
           selectable={true}
           selectMirror={true}
           dayMaxEvents={true}
