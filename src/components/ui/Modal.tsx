@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { IoMdClose } from "react-icons/io";
+import useClickOutside from "../../hooks/useClickOutside";
 
 interface ModalProps {
   isOpen: boolean;
@@ -9,22 +10,7 @@ interface ModalProps {
 
 const Modal = ({ isOpen, closeModal, children }: ModalProps) => {
   const modalRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        modalRef.current &&
-        !modalRef.current.contains(event.target as Node)
-      ) {
-        closeModal();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [closeModal]);
+  useClickOutside(modalRef, closeModal)
 
   return (
     isOpen && (

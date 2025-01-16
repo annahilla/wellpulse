@@ -3,18 +3,22 @@ import Button from "./ui/Button";
 import logo from "../assets/logo.png";
 import NavItem from "./ui/NavItem";
 import { AiOutlineMenu } from "react-icons/ai";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import { logoutUser } from "../redux/authActions";
+import useClickOutside from "../hooks/useClickOutside";
 
 const Navbar = () => {
   const isLoggedIn = useSelector(
     (state: RootState) => state.user.isAuthenticated
   );
   const dispatch = useDispatch<AppDispatch>();
+  const navbarRef = useRef<HTMLUListElement>(null);
+  const hamburgerRef = useRef<HTMLButtonElement>(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -25,6 +29,8 @@ const Navbar = () => {
     navigate("/");
   };
 
+  useClickOutside(navbarRef, () => setIsMenuOpen(false), hamburgerRef);
+
   return (
     <nav className="relative py-10 flex justify-between items-center">
       <NavLink to="/" className="flex items-center justify-center gap-3">
@@ -33,11 +39,12 @@ const Navbar = () => {
       </NavLink>
 
       <div className="">
-        <button onClick={toggleMenu} className="md:hidden">
+        <button onClick={toggleMenu} className="md:hidden" ref={hamburgerRef}>
           <AiOutlineMenu size={27} />
         </button>
 
         <ul
+          ref={navbarRef}
           className={`${
             isMenuOpen ? "block" : "hidden"
           } z-50 flex py-10 absolute uppercase top-20 left-0 bg-white w-full flex-col justify-between items-center gap-10 md:bg-transparent md:py-0 md:w-auto md:flex md:flex-row xl:gap-20 md:relative md:top-0 md:left-0`}
