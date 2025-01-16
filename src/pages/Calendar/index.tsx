@@ -28,12 +28,13 @@ import HabitDetails from "./HabitDetails";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { categoryColors } from "../../utils/categoryColors";
+import { useLocation } from "react-router";
 
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const CalendarPage = () => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-  const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
+  const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);  
   const [events, setEvents] = useState<EventInput[]>([]);
   const [selectedHabit, setSelectedHabit] = useState<HabitDetailsInterface>({
     name: "",
@@ -63,6 +64,15 @@ const CalendarPage = () => {
 
   const closeHabitModal = () => setIsHabitModalOpen(false);
   const openHabitModal = () => setIsHabitModalOpen(true);
+
+  const location = useLocation();
+  const { isFormModalOpen: initialModalState } = location.state || {};
+
+  useEffect(() => {
+    if (initialModalState) {
+      setIsFormModalOpen(true);
+    }
+  }, [initialModalState]);
 
   useEffect(() => {
     dispatch(getHabits());

@@ -1,11 +1,11 @@
-import { useNavigate } from "react-router";
 import Button from "../../components/ui/Button";
+import { useStartNow } from "../../hooks/useStartNow";
 
 const Hero = () => {
-  const navigate = useNavigate();
-
+  const handleStartNow = useStartNow();
+  
   return (
-    <section className="my-4 flex flex-col items-center justify-center gap-10 m-auto text-center sm:my-16 md:w-2/3">
+    <section className="mt-5 my-4 flex flex-col items-center justify-center gap-10 m-auto text-center sm:my-16 md:w-2/3 lg:mt-0">
       <h1 className="text-3xl font-bold md:text-5xl lg:leading-relaxed">
         Empower Your Habits, <br />
         Transform Your Well-being
@@ -17,7 +17,7 @@ const Hero = () => {
       </p>
       <Button
       isDisabled={false}
-        handleClick={() => navigate("/signup")}
+        handleClick={handleStartNow}
         type="primary"
         size="lg"
         textSize="text-lg"
