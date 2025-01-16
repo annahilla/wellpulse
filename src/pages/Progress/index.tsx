@@ -1,16 +1,14 @@
 import { useState, useEffect } from "react";
 import Chart from "chart.js/auto";
 import { CategoryScale, ChartData } from "chart.js";
-import PieChart from "../../components/charts/PieChart";
 import { Categories, Habit } from "../../types/types";
 import { useDispatch } from "react-redux";
 import { getHabits } from "../../redux/habitsActions";
 import { AppDispatch } from "../../redux/store";
 import { useTypedSelector } from "../Calendar";
 import { getLastNDays } from "../../utils/getLastNDays";
-import LineChart from "../../components/charts/LineChart";
-import BarChart from "../../components/charts/BarChart";
 import { categoryColors } from "../../utils/categoryColors";
+import ChartComponent from "../../components/ui/Chart";
 
 Chart.register(CategoryScale);
 
@@ -190,23 +188,27 @@ const ProgressPage = () => {
 
   return (
     <div className="mx-10 grid grid-cols-1 items-center gap-20 my-10 m-auto md:grid-cols-2 md:gap-10 lg:grid-cols-3">
-      <PieChart
+      <ChartComponent
+        chartType="pie"
         title="Habits scheduled by Category"
         subtitle="Number of habits scheduled by category"
         chartData={habitsByCategoryChartData}
       />
-      <LineChart
+      <ChartComponent
+        chartType="line"
         title="Completion of Habits"
         subtitle="Habits completed per category over the last 10 days"
         chartData={completedHabitsChartData}
       />
-      <BarChart
+      <ChartComponent
+        chartType="bar"
         title="Habits completed by Category"
         subtitle="Total of habits completed by category"
         chartData={totalCompletedHabitsByCategory}
       />
       {habitPieCharts.map(({ habitName, chartData }, index) => (
-        <PieChart
+        <ChartComponent
+          chartType="pie"
           key={index}
           title={habitName}
           subtitle={`Progress for ${habitName}`}
