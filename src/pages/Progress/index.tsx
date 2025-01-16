@@ -79,10 +79,12 @@ const ProgressPage = () => {
   const totalEventsByHabit = (habit: Habit) => {
     const startDate = new Date(habit.date);
     const currentDate = new Date();
+    let totalEvents;
 
     const diffInTime = currentDate.getTime() - startDate.getTime();
-    const totalEvents = Math.floor(diffInTime / (1000 * 3600 * 24));
-    console.log(habit.name, totalEvents);
+    totalEvents = Math.ceil(diffInTime / (1000 * 3600 * 24));
+    if (totalEvents < 0) totalEvents = 0;
+    
     return totalEvents;
   };
 
@@ -91,14 +93,14 @@ const ProgressPage = () => {
     const completedEvents = habit.completedDays.length;
     const uncompletedEvents = totalEvents - completedEvents;
 
-    const categoryColor = categoryColors[habit.category] || "#000000"; // Default color if category is missing
+    const categoryColor = categoryColors[habit.category];
     const uncompletedColor = `rgba(${parseInt(
       categoryColor.slice(1, 3),
       16
     )}, ${parseInt(categoryColor.slice(3, 5), 16)}, ${parseInt(
       categoryColor.slice(5, 7),
       16
-    )}, 0.3)`; // Lightened version
+    )}, 0.3)`;
 
     return {
       labels: ["Completed Events", "Uncompleted Events"],
@@ -182,7 +184,9 @@ const ProgressPage = () => {
         ],
       });
 
-      const habitCharts = habits.map((habit) => ({
+      const habitCharts = habits
+      .filter((habit) => totalEventsByHabit(habit) > 0)  
+      .map((habit) => ({
         habitName: habit.name,
         chartData: calculatePieChartData(habit),
       }));
