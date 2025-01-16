@@ -8,7 +8,7 @@ import { AppDispatch } from "../../redux/store";
 import { useTypedSelector } from "../Calendar";
 import { getLastNDays } from "../../utils/getLastNDays";
 import { categoryColors } from "../../utils/categoryColors";
-import ChartComponent from "../../components/ui/Chart";
+import ChartComponent from "./Chart";
 
 Chart.register(CategoryScale);
 
