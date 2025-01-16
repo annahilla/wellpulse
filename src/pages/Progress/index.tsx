@@ -10,16 +10,10 @@ import { useTypedSelector } from "../Calendar";
 import { getLastNDays } from "../../utils/getLastNDays";
 import LineChart from "../../components/charts/LineChart";
 import BarChart from "../../components/charts/BarChart";
+import { categoryColors } from "../../utils/categoryColors";
 
 Chart.register(CategoryScale);
 
-const categoryColors: { [key: string]: string } = {
-  [Categories.Sports]: "#a3e635",
-  [Categories.Nutrition]: "#2E7D32",
-  [Categories.MentalHealth]: "#e96f41",
-  [Categories.Learning]: "#FFC107",
-  [Categories.Art]: "#65a30d",
-};
 
 const ProgressPage = () => {
   const dispatch = useDispatch<AppDispatch>();

@@ -27,16 +27,9 @@ import AddHabitForm from "./AddHabitForm";
 import HabitDetails from "./HabitDetails";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { categoryColors } from "../../utils/categoryColors";
 
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
-
-const categoryColors: { [key: string]: string } = {
-  [Categories.Sports]: "bg-lime-500 text-white",
-  [Categories.Nutrition]: "bg-green text-white",
-  [Categories.MentalHealth]: "bg-[#e96f41] text-white",
-  [Categories.Learning]: "bg-yellow text-white",
-  [Categories.Art]: "bg-lime-600 text-white",
-};
 
 const CalendarPage = () => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
@@ -208,18 +201,20 @@ const CalendarPage = () => {
     }
   };
 
-  const eventClassNames = (eventInfo: EventContentArg) => {
-    const category = eventInfo.event.extendedProps?.category;
-    return categoryColors[category] || "bg-gray-300";
-  };
-
   const handleEventMount = (info: EventMountArg) => {
     const currentDate = new Date();
     const eventDate = new Date(info.event.start!);
+    const category = info.event.extendedProps?.category;  
+    const color = categoryColors[category]; 
 
     if (eventDate < currentDate) {
       info.el.classList.add("opacity-50");
-    }
+    } 
+    
+    info.el.style.backgroundColor = color;
+    const tailwindColorClass = `bg-[${color}]`;
+    info.el.classList.add(tailwindColorClass);
+    info.el.classList.add("border-0");
   };
 
   return (
@@ -250,7 +245,6 @@ const CalendarPage = () => {
           eventClick={handleEventClick}
           dateClick={handleDateClick}
           select={handleTimeSlotClick}
-          eventClassNames={eventClassNames}
           eventContent={(eventInfo) => renderEventContent(eventInfo, habits)}
           eventDidMount={handleEventMount}
           views={{
