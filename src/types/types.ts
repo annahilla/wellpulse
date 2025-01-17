@@ -1,4 +1,4 @@
-export enum Categories {
+export enum HabitCategories {
     Sports = 'Sports',
     Nutrition = 'Nutrition',
     MentalHealth = 'Mental health',
@@ -15,14 +15,14 @@ export interface Event {
     endRecur: string;
     daysOfWeek: number[];
     extendedProps: {
-        category: Categories
+        category: HabitCategories
     }
 }
 
 export interface Habit {
     _id?: string;
     name: string;
-    category: Categories
+    category: HabitCategories
     frequency: 'Daily' | 'Weekly'; 
     timeOfDay: string; 
     duration: number;
@@ -33,7 +33,7 @@ export interface Habit {
 export interface HabitDetailsInterface {
     _id?: string;
     name: string;
-    category: Categories
+    category: HabitCategories
     frequency: 'Daily' | 'Weekly'; 
     timeOfDay: string; 
     duration: number;
@@ -41,3 +41,16 @@ export interface HabitDetailsInterface {
     eventDate:string;
     completedDays: string[];
 }
+
+export type LocationCategory =
+  | "parks"
+  | "cafes"
+  | "gyms"
+  | "civicCenters"
+  | "healthyRestaurants"
+  | "relaxZones"
+  | "coworking"
+  | "outdoorSports"
+  | "libraries"
+  | "hikingRoutes"
+  | "craftWorkshops";

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Chart from "chart.js/auto";
 import { CategoryScale, ChartData } from "chart.js";
-import { Categories, Habit } from "../../types/types";
+import { HabitCategories, Habit } from "../../types/types";
 import { useDispatch } from "react-redux";
 import { getHabits } from "../../redux/habitsActions";
 import { AppDispatch } from "../../redux/store";
@@ -11,7 +11,6 @@ import { categoryColors } from "../../utils/categoryColors";
 import ChartComponent from "./Chart";
 
 Chart.register(CategoryScale);
-
 
 const ProgressPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -42,10 +41,10 @@ const ProgressPage = () => {
   >([]);
 
   const countHabitsByCategory = (habits: Habit[]) => {
-    return habits.reduce((acc: { [key in Categories]: number }, habit) => {
+    return habits.reduce((acc: { [key in HabitCategories]: number }, habit) => {
       acc[habit.category] = (acc[habit.category] || 0) + 1;
       return acc;
-    }, {} as { [key in Categories]: number });
+    }, {} as { [key in HabitCategories]: number });
   };
 
   const getCompletedHabitsPerCategoryAndDate = (habits: Habit[]) => {
@@ -76,7 +75,7 @@ const ProgressPage = () => {
     const diffInTime = currentDate.getTime() - startDate.getTime();
     totalEvents = Math.ceil(diffInTime / (1000 * 3600 * 24));
     if (totalEvents < 0) totalEvents = 0;
-    
+
     return totalEvents;
   };
 
@@ -177,11 +176,11 @@ const ProgressPage = () => {
       });
 
       const habitCharts = habits
-      .filter((habit) => totalEventsByHabit(habit) > 0)  
-      .map((habit) => ({
-        habitName: habit.name,
-        chartData: calculatePieChartData(habit),
-      }));
+        .filter((habit) => totalEventsByHabit(habit) > 0)
+        .map((habit) => ({
+          habitName: habit.name,
+          chartData: calculatePieChartData(habit),
+        }));
       setHabitPieCharts(habitCharts);
     }
   }, [habits]);

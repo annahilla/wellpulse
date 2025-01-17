@@ -14,7 +14,7 @@ import { FormEvent, useEffect, useState } from "react";
 import {
   Habit,
   Event,
-  Categories,
+  HabitCategories,
   HabitDetailsInterface,
 } from "../../types/types";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
@@ -34,11 +34,11 @@ export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 const CalendarPage = () => {
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
-  const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);  
+  const [isHabitModalOpen, setIsHabitModalOpen] = useState(false);
   const [events, setEvents] = useState<EventInput[]>([]);
   const [selectedHabit, setSelectedHabit] = useState<HabitDetailsInterface>({
     name: "",
-    category: Categories.Sports,
+    category: HabitCategories.Sports,
     frequency: "Daily",
     timeOfDay: "10:00",
     duration: 20,
@@ -48,7 +48,7 @@ const CalendarPage = () => {
   });
   const [newHabit, setNewHabit] = useState<Habit>({
     name: "",
-    category: Categories.Sports,
+    category: HabitCategories.Sports,
     frequency: "Daily",
     timeOfDay: "10:00",
     duration: 20,
@@ -214,13 +214,13 @@ const CalendarPage = () => {
   const handleEventMount = (info: EventMountArg) => {
     const currentDate = new Date();
     const eventDate = new Date(info.event.start!);
-    const category = info.event.extendedProps?.category;  
-    const color = categoryColors[category]; 
+    const category = info.event.extendedProps?.category;
+    const color = categoryColors[category];
 
     if (eventDate < currentDate) {
       info.el.classList.add("opacity-50");
-    } 
-    
+    }
+
     info.el.style.backgroundColor = color;
     const tailwindColorClass = `bg-[${color}]`;
     info.el.classList.add(tailwindColorClass);
