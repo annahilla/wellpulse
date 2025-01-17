@@ -47,6 +47,7 @@ fc-button:hover {
     height: 4.5rem !important;
 }
 
+
 @media (max-width: 768px) {
     .fc {
         height: auto !important;
