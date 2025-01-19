@@ -1,3 +1,5 @@
+import { LatLngTuple } from "leaflet";
+
 export enum HabitCategories {
     Sports = 'Sports',
     Nutrition = 'Nutrition',
@@ -54,3 +56,10 @@ export type LocationCategory =
   | "libraries"
   | "hikingRoutes"
   | "craftWorkshops";
+
+  export interface Location {
+    _id: string;
+    name: string;
+    category: LocationCategory;
+    position: LatLngTuple;
+}

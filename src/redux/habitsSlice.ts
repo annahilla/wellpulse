@@ -3,13 +3,11 @@ import { Habit } from '../types/types';
 
 interface HabitsState {
     habits: Habit[];
-    loading: boolean;
     error: string | null;
 }
 
 const initialState: HabitsState = {
     habits: [],
-    loading: false,
     error: null,
 };
 
