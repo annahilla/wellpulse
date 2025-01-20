@@ -44,6 +44,14 @@ const CalendarPage = () => {
     duration: 20,
     date: "",
     eventDate: "",
+    location: {
+      _id: "",
+      name: "",
+      category: "gyms",
+      position: [1, 1],
+      direction: "",
+      website: "",
+    },
     completedDays: [],
   });
   const [newHabit, setNewHabit] = useState<Habit>({
@@ -53,6 +61,14 @@ const CalendarPage = () => {
     timeOfDay: "10:00",
     duration: 20,
     date: "",
+    location: {
+      _id: "",
+      name: "",
+      category: "gyms",
+      position: [1, 1],
+      direction: "",
+      website: "",
+    },
     completedDays: [],
   });
   const { habits } = useTypedSelector((state) => state.habits);

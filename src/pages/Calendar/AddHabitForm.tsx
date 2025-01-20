@@ -1,4 +1,4 @@
-import { FormEvent } from "react";
+import { FormEvent, useState } from "react";
 import Modal from "../../components/ui/Modal";
 import { Habit } from "../../types/types";
 import Button from "../../components/ui/Button";
@@ -7,6 +7,7 @@ import useHabitOptions from "../../hooks/useHabitOptions";
 import { RootState } from "../../redux/store";
 import { useSelector } from "react-redux";
 import useFormValidation from "../../hooks/useFormValidation";
+import MapComponent from "../Map/Map";
 
 interface AddHabitFormProps {
   isFormModalOpen: boolean;
@@ -27,8 +28,14 @@ const AddHabitForm = ({
 }: AddHabitFormProps) => {
   const { categories, frequencies } = useHabitOptions();
   const { formErrors, validateForm } = useFormValidation(newHabit);
-  const error  = useSelector((state: RootState) => state.habits.error);
+  const error = useSelector((state: RootState) => state.habits.error);
   const date = newHabit.date.split("T")[0];
+
+  const [locationType, setLocationType] = useState("home");
+
+  const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setLocationType(event.target.value);
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -39,7 +46,7 @@ const AddHabitForm = ({
 
     await createHabitHandler(event);
   };
- 
+
   return (
     <Modal isOpen={isFormModalOpen} closeModal={closeFormModal}>
       <h3 className="text-2xl text-center font-bold mb-4">Add a new habit</h3>
@@ -144,6 +151,33 @@ const AddHabitForm = ({
             required
           />
           {formErrors.date && <ErrorMessage text={formErrors.date} />}
+        </div>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="location">Where does this habit take place?</label>
+          <div className="flex col gap-4">
+            <div className="flex gap-2">
+              <input
+                type="radio"
+                name="location"
+                value="home"
+                checked={locationType === "home"}
+                onChange={handleLocationChange}
+              />
+              <label>Home</label>
+            </div>
+
+            <div className="flex gap-2">
+              <input
+                type="radio"
+                name="location"
+                value="outside"
+                checked={locationType === "outside"}
+                onChange={handleLocationChange}
+              />
+              <label>Outside</label>
+            </div>
+          </div>
+          {locationType === "outside" && <MapComponent />}
         </div>
         <Button
           isDisabled={error ? true : false}

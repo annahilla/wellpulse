@@ -49,7 +49,6 @@ fc-button:hover {
 
 .leaflet-container {
     height: 30rem !important;
-    margin: 2rem 0;
 }
 
 @media (max-width: 768px) {
