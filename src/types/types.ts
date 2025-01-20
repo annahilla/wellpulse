@@ -62,4 +62,6 @@ export type LocationCategory =
     name: string;
     category: LocationCategory;
     position: LatLngTuple;
+    direction: string;
+    website:string;
 }

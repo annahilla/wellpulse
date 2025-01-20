@@ -16,6 +16,7 @@ import { useTypedSelector } from "../Calendar";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/store";
 import { getLocations } from "../../redux/locationsActions";
+import { Link } from "react-router";
 
 const position: LatLngExpression = [41.3874, 2.1686];
 
@@ -142,7 +143,13 @@ const MapPage = () => {
           position={place.position as LatLngTuple}
           icon={icons[place.category as LocationCategory]}
         >
-          <Popup>{place.name}</Popup>
+          <Popup>
+            <Link target="_blank" to={place.website} className="font-bold text-lg">{place.name}</Link>
+            <div className="flex items-start justify-start gap-2">
+              <p className="font-bold">Direction:</p>
+              <p>{place.direction}</p>
+            </div>
+            </Popup>
         </Marker>
       ))}
     </MapContainer>
