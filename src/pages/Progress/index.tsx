@@ -73,11 +73,20 @@ const ProgressPage = () => {
     let totalEvents;
 
     const diffInTime = currentDate.getTime() - startDate.getTime();
-    totalEvents = Math.ceil(diffInTime / (1000 * 3600 * 24));
+    
+    if(habit.frequency === 'Daily') {
+      totalEvents = Math.ceil(diffInTime / (1000 * 3600 * 24));
+    } else if(habit.frequency === 'Weekly') {
+      totalEvents = Math.ceil(diffInTime / (1000 * 3600 * 24 * 7));
+    } else {
+      totalEvents = 0;
+    }
+    
     if (totalEvents < 0) totalEvents = 0;
 
     return totalEvents;
   };
+
 
   const calculatePieChartData = (habit: Habit) => {
     const totalEvents = totalEventsByHabit(habit);
