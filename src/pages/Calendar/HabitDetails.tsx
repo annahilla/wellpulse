@@ -24,7 +24,7 @@ const HabitDetails = ({
   const dispatch = useDispatch<AppDispatch>();
   const [updatedHabit, setUpdatedHabit] = useState<HabitDetailsInterface>(habit);
   const { categories, frequencies } = useHabitOptions();
-  const { formErrors, validateForm } = useFormValidation(updatedHabit);
+  const { formErrors, validateForm } = useFormValidation(updatedHabit, false);
   const { _id, eventDate } = habit;
 
   const [error, setError] = useState(false);
@@ -71,8 +71,10 @@ const HabitDetails = ({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    
 
     if (!validateForm()) {
+      console.log("Invalid form");
       return;
     }
 
@@ -84,11 +86,13 @@ const HabitDetails = ({
           );
           closeHabitModal();
           toast.success("Habit updated successfully!");
-        }
+        } 
       } catch (error) {
         console.error("Error updating habit:", error);
         toast.error("There was an error updating the habit.");
       }
+    } else {
+      console.log(error)
     }
   };
 
@@ -208,7 +212,8 @@ const HabitDetails = ({
             </div>
             {formErrors.duration && <ErrorMessage text={formErrors.duration} />}
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-4">
             <p className="font-bold">Date:</p>
             <input
               name="date"
@@ -218,6 +223,8 @@ const HabitDetails = ({
               value={eventDate}
               disabled
             />
+            </div>
+            {formErrors.date && <ErrorMessage text={formErrors.date} />}
           </div>
           <div className="flex items-center m-auto gap-6 mt-7">
             <Button

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Habit } from '../types/types';
 
-const useFormValidation = (habit: Habit) => {
+const useFormValidation = (habit: Habit, validateDate: boolean = true) => {
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
   const validateForm = () => {
@@ -31,8 +31,10 @@ const useFormValidation = (habit: Habit) => {
       errors.duration = "Duration must be between 1 and 1440 minutes";
     }
 
-    if (!habit.date || eventDate < currentDate) {
-      errors.date = "Please select a valid date";
+    if(validateDate) {
+      if (!habit.date || eventDate < currentDate) {
+        errors.date = "Please select a valid date";
+      }
     }
 
     setFormErrors(errors);
