@@ -16,17 +16,16 @@ import {
   Event,
   HabitCategories,
   HabitDetailsInterface,
+  LocationInterface,
 } from "../../types/types";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../redux/store";
 import { createHabit, getHabits } from "../../redux/habitsActions";
-import { setError } from "../../redux/authSlice";
 import { calculateEndTime } from "../../utils/calculateEndTime";
 import useToolbarConfig from "../../hooks/useToolbarConfig";
 import AddHabitForm from "./AddHabitForm";
 import HabitDetails from "./HabitDetails";
 import { FaRegCheckCircle } from "react-icons/fa";
-import { toast } from "react-toastify";
 import { categoryColors } from "../../utils/categoryColors";
 import { useLocation } from "react-router";
 
@@ -44,14 +43,6 @@ const CalendarPage = () => {
     duration: 20,
     date: "",
     eventDate: "",
-    location: {
-      _id: "",
-      name: "",
-      category: "gyms",
-      position: [1, 1],
-      direction: "",
-      website: "",
-    },
     completedDays: [],
   });
   const [newHabit, setNewHabit] = useState<Habit>({
@@ -61,16 +52,10 @@ const CalendarPage = () => {
     timeOfDay: "10:00",
     duration: 20,
     date: "",
-    location: {
-      _id: "",
-      name: "",
-      category: "gyms",
-      position: [1, 1],
-      direction: "",
-      website: "",
-    },
     completedDays: [],
   });
+  const [isHome, setIsHome] = useState(true);
+  const [habitLocation, setHabitLocation] = useState<LocationInterface>();
   const { habits } = useTypedSelector((state) => state.habits);
   const dispatch = useDispatch<AppDispatch>();
   const toolbarConfig = useToolbarConfig();
@@ -143,6 +128,10 @@ const CalendarPage = () => {
     }
   }, [habits]);
 
+  const handleIsHome = () => {
+    setIsHome((prev) => !prev);
+  };
+
   const handleInputChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -154,39 +143,34 @@ const CalendarPage = () => {
     }));
   };
 
+  const addLocation = (place: LocationInterface) => {
+    setHabitLocation(place);
+  };
+
   const createHabitHandler = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    let habitToCreate;
 
-    const habitToCreate = {
-      ...newHabit,
-      completedDays: [],
-    };
-
-    if (!newHabit.name || newHabit.name.trim() === "") {
-      dispatch(setError("Please enter the name of the habit"));
-      return;
+    if (isHome) {
+      habitToCreate = {
+        ...newHabit,
+        completedDays: [],
+      };
+    } else {
+      habitToCreate = {
+        ...newHabit,
+        completedDays: [],
+        location: habitLocation,
+      };
     }
 
-    if (newHabit.duration <= 0) {
-      dispatch(setError("Please enter a valid duration number in minutes"));
-      return;
-    }
-
-    const currentDate = new Date();
-    const habitDate = new Date(newHabit.date);
-
-    if (habitDate < currentDate) {
-      dispatch(setError("The start date cannot be before the current date"));
-      return;
-    }
+    console.log(habitToCreate);
 
     try {
       await dispatch(createHabit(habitToCreate));
-      toast.success("Habit created successfully!");
       closeFormModal();
     } catch (err) {
       console.error("Error creating habit: ", err);
-      toast.error("There was an error creating the habit.");
     }
   };
 
@@ -291,7 +275,10 @@ const CalendarPage = () => {
         closeFormModal={closeFormModal}
         createHabitHandler={createHabitHandler}
         handleInputChange={handleInputChange}
+        addLocation={addLocation}
         newHabit={newHabit}
+        isHome={isHome}
+        handleIsHome={handleIsHome}
       />
       <HabitDetails
         isHabitModalOpen={isHabitModalOpen}

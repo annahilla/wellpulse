@@ -1,6 +1,6 @@
-import { FormEvent, useState } from "react";
+import { FormEvent } from "react";
 import Modal from "../../components/ui/Modal";
-import { Habit } from "../../types/types";
+import { Habit, LocationInterface } from "../../types/types";
 import Button from "../../components/ui/Button";
 import ErrorMessage from "../../components/ui/ErrorMessage";
 import useHabitOptions from "../../hooks/useHabitOptions";
@@ -12,6 +12,9 @@ import MapComponent from "../Map/Map";
 interface AddHabitFormProps {
   isFormModalOpen: boolean;
   newHabit: Habit;
+  isHome: boolean;
+  handleIsHome: () => void;
+  addLocation: (place: LocationInterface) => void;
   closeFormModal: () => void;
   createHabitHandler: (event: FormEvent<HTMLFormElement>) => Promise<void>;
   handleInputChange: (
@@ -22,19 +25,20 @@ interface AddHabitFormProps {
 const AddHabitForm = ({
   isFormModalOpen,
   newHabit,
+  isHome,
+  handleIsHome,
+  addLocation,
   closeFormModal,
   createHabitHandler,
   handleInputChange,
 }: AddHabitFormProps) => {
   const { categories, frequencies } = useHabitOptions();
-  const { formErrors, validateForm } = useFormValidation(newHabit);
+  const { formErrors, validateForm } = useFormValidation(newHabit, isHome);
   const error = useSelector((state: RootState) => state.habits.error);
   const date = newHabit.date.split("T")[0];
 
-  const [locationType, setLocationType] = useState("home");
-
-  const handleLocationChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLocationType(event.target.value);
+  const selectLocation = (place: LocationInterface) => {
+    addLocation(place);
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -160,8 +164,8 @@ const AddHabitForm = ({
                 type="radio"
                 name="location"
                 value="home"
-                checked={locationType === "home"}
-                onChange={handleLocationChange}
+                checked={isHome}
+                onChange={handleIsHome}
               />
               <label>Home</label>
             </div>
@@ -171,13 +175,14 @@ const AddHabitForm = ({
                 type="radio"
                 name="location"
                 value="outside"
-                checked={locationType === "outside"}
-                onChange={handleLocationChange}
+                checked={!isHome}
+                onChange={handleIsHome}
               />
               <label>Outside</label>
             </div>
           </div>
-          {locationType === "outside" && <MapComponent />}
+          {formErrors.location && <ErrorMessage text={formErrors.location} />}
+          {!isHome && <MapComponent selectLocation={selectLocation} />}
         </div>
         <Button
           isDisabled={error ? true : false}

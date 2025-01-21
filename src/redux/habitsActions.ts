@@ -3,6 +3,7 @@ import { addHabit, removeHabit, setHabits, updateHabit, } from "./habitsSlice";
 import { Habit } from "../types/types";
 import { RootState } from "./store";
 import { auth } from "../firebaseConfig";
+import { toast } from "react-toastify";
 
 export const createHabit = createAsyncThunk(
   "habits/createHabit",
@@ -40,9 +41,11 @@ export const createHabit = createAsyncThunk(
       const data = await response.json();
 
       if (response.ok) {
+        toast.success("Habit created successfully!");
         dispatch(addHabit(data.habit));
         return data.habit;
       } else {
+        toast.error("There was an error creating the habit.");
         throw new Error(data.message || "Failed to create habit");
       }
     } catch (error) {
@@ -147,8 +150,10 @@ export const deleteHabit = createAsyncThunk(
 
 export const updateHabitAsync = createAsyncThunk(
   'habits/updateHabit',
-  async ({ habitId, habitData }: { habitId: string; habitData: any }, { getState, dispatch, rejectWithValue }) => {
+  async ({ habitId, habitData }: { habitId: string; habitData: Habit }, { getState, dispatch, rejectWithValue }) => {
     let token = (getState() as RootState).user.token;
+
+    console.log("Data being sent:", habitData);
 
     if (!token) {
       const user = auth.currentUser;
@@ -181,11 +186,13 @@ export const updateHabitAsync = createAsyncThunk(
 
       if (response.ok) {
         dispatch(updateHabit(data.data));
+        toast.success("Habit updated successfully!");
         return data.data;
       } else {
         throw new Error(data.message || 'Failed to update habit');
       }
     } catch (error) {
+      toast.error("There was an error updating the habit.");
       console.error('Error updating habit:', error);
       throw error;
     }

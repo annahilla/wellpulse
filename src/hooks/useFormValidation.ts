@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Habit } from '../types/types';
 
-const useFormValidation = (habit: Habit, validateDate: boolean = true) => {
+const useFormValidation = (habit: Habit, validateDate: boolean = true, isHome: boolean = true) => {
   const [formErrors, setFormErrors] = useState<{ [key: string]: string }>({});
 
   const validateForm = () => {
@@ -35,6 +35,10 @@ const useFormValidation = (habit: Habit, validateDate: boolean = true) => {
       if (!habit.date || eventDate < currentDate) {
         errors.date = "Please select a valid date";
       }
+    }
+
+    if(!isHome && !habit.location) {
+      errors.location = "Please select a location from the map or do the habit at home"
     }
 
     setFormErrors(errors);

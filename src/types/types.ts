@@ -29,7 +29,7 @@ export interface Habit {
     timeOfDay: string; 
     duration: number;
     date: string;
-    location: Location;
+    location?: LocationInterface;
     completedDays: string[];
 }
 
@@ -41,7 +41,7 @@ export interface HabitDetailsInterface {
     timeOfDay: string; 
     duration: number;
     date: string;
-    location: Location;
+    location?: LocationInterface;
     eventDate:string;
     completedDays: string[];
 }
@@ -59,7 +59,7 @@ export type LocationCategory =
   | "hikingRoutes"
   | "craftWorkshops";
 
-  export interface Location {
+  export interface LocationInterface {
     _id: string;
     name: string;
     category: LocationCategory;

@@ -22,14 +22,15 @@ const HabitDetails = ({
   closeHabitModal,
 }: HabitDetailsProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const [updatedHabit, setUpdatedHabit] = useState<HabitDetailsInterface>(habit);
+  const [updatedHabit, setUpdatedHabit] =
+    useState<HabitDetailsInterface>(habit);
   const { categories, frequencies } = useHabitOptions();
   const { formErrors, validateForm } = useFormValidation(updatedHabit, false);
   const { _id, eventDate } = habit;
 
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  
+
   const currentDate = new Date();
   const eventDateFormatted = new Date(eventDate);
 
@@ -71,7 +72,6 @@ const HabitDetails = ({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    
 
     if (!validateForm()) {
       console.log("Invalid form");
@@ -85,14 +85,12 @@ const HabitDetails = ({
             updateHabitAsync({ habitId: _id, habitData: updatedHabit })
           );
           closeHabitModal();
-          toast.success("Habit updated successfully!");
-        } 
+        }
       } catch (error) {
         console.error("Error updating habit:", error);
-        toast.error("There was an error updating the habit.");
       }
     } else {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -129,100 +127,121 @@ const HabitDetails = ({
           {error && <ErrorMessage text={errorMessage} />}
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-4">
-            <p className="font-bold">Name:</p>
-            <input
-              name="name"
-              type="text"
-              onChange={handleChange}
-              className="border inputx-12 px-4 py-1 rounded"
-              value={updatedHabit.name}
-            />
+              <p className="font-bold">Name:</p>
+              <input
+                name="name"
+                type="text"
+                onChange={handleChange}
+                className="border inputx-12 px-4 py-1 rounded"
+                value={updatedHabit.name}
+              />
             </div>
             {formErrors.name && <ErrorMessage text={formErrors.name} />}
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-4">
-            <p className="font-bold">Category:</p>
-            <select
-              onChange={handleChange}
-              className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
-              name="category"
-              value={updatedHabit.category}
-              required
-            >
-              {categories.length > 0 &&
-                categories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-            </select>
+              <p className="font-bold">Category:</p>
+              <select
+                onChange={handleChange}
+                className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
+                name="category"
+                value={updatedHabit.category}
+                required
+              >
+                {categories.length > 0 &&
+                  categories.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+              </select>
             </div>
             {formErrors.category && <ErrorMessage text={formErrors.category} />}
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-4">
-            <p className="font-bold">Frequency:</p>
-            <select
-              onChange={handleChange}
-              className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
-              name="frequency"
-              value={updatedHabit.frequency}
-              required
-            >
-              {frequencies.length > 0 &&
-                frequencies.map((frequency) => (
-                  <option key={frequency} value={frequency}>
-                    {frequency}
-                  </option>
-                ))}
-            </select>
-            </div>
-            {formErrors.frequency && <ErrorMessage text={formErrors.frequency} />}
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-4">
-            <p className="font-bold">Time:</p>
-            <input
-              name="timeOfDay"
-              type="time"
-              onChange={handleChange}
-              className="border inputx-12 px-4 py-1 rounded"
-              value={updatedHabit.timeOfDay}
-            />
-            </div>
-            {formErrors.timeOfDay && <ErrorMessage text={formErrors.timeOfDay} />}
-          </div>
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-4">
-            <p className="font-bold">Duration:</p>
-            <div className="flex items-center relative border inputx-12 rounded">
-            <input
+              <p className="font-bold">Frequency:</p>
+              <select
                 onChange={handleChange}
-                className="px-5 py-2"
-                name="duration"
-                type="number"
-                value={updatedHabit.duration}
+                className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
+                name="frequency"
+                value={updatedHabit.frequency}
                 required
-              />
-              <span className="absolute text-sm right-0 px-5 py-2 border-l">
-                minutes
-              </span>
+              >
+                {frequencies.length > 0 &&
+                  frequencies.map((frequency) => (
+                    <option key={frequency} value={frequency}>
+                      {frequency}
+                    </option>
+                  ))}
+              </select>
             </div>
+            {formErrors.frequency && (
+              <ErrorMessage text={formErrors.frequency} />
+            )}
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-4">
+              <p className="font-bold">Time:</p>
+              <input
+                name="timeOfDay"
+                type="time"
+                onChange={handleChange}
+                className="border inputx-12 px-4 py-1 rounded"
+                value={updatedHabit.timeOfDay}
+              />
+            </div>
+            {formErrors.timeOfDay && (
+              <ErrorMessage text={formErrors.timeOfDay} />
+            )}
+          </div>
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-4">
+              <p className="font-bold">Duration:</p>
+              <div className="flex items-center relative border inputx-12 rounded">
+                <input
+                  onChange={handleChange}
+                  className="px-5 py-2"
+                  name="duration"
+                  type="number"
+                  value={updatedHabit.duration}
+                  required
+                />
+                <span className="absolute text-sm right-0 px-5 py-2 border-l">
+                  minutes
+                </span>
+              </div>
             </div>
             {formErrors.duration && <ErrorMessage text={formErrors.duration} />}
           </div>
+          {updatedHabit.location && (
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-4">
+                <p className="font-bold">Location:</p>
+                <div className="flex items-center relative border inputx-12 rounded">
+                  <input
+                    className="px-5 py-2"
+                    name="duration"
+                    type="text"
+                    value={updatedHabit.location.name}
+                    required
+                    disabled
+                  />
+                </div>
+              </div>
+            </div>
+          )}
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-4">
-            <p className="font-bold">Date:</p>
-            <input
-              name="date"
-              type="date"
-              onChange={handleChange}
-              className="border inputx-12 px-4 py-1 rounded"
-              value={eventDate}
-              disabled
-            />
+              <p className="font-bold">Date:</p>
+              <input
+                name="date"
+                type="date"
+                onChange={handleChange}
+                className="border inputx-12 px-4 py-1 rounded"
+                value={eventDate}
+                disabled
+              />
             </div>
             {formErrors.date && <ErrorMessage text={formErrors.date} />}
           </div>
