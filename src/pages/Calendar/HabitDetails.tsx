@@ -9,6 +9,7 @@ import useHabitOptions from "../../hooks/useHabitOptions";
 import ErrorMessage from "../../components/ui/ErrorMessage";
 import { toast } from "react-toastify";
 import useFormValidation from "../../hooks/useFormValidation";
+import MapComponent from "../Map/Map";
 
 interface HabitDetailsProps {
   isHabitModalOpen: boolean;
@@ -214,22 +215,26 @@ const HabitDetails = ({
             </div>
             {formErrors.duration && <ErrorMessage text={formErrors.duration} />}
           </div>
-          {updatedHabit.location && (
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-4">
-                <p className="font-bold">Location:</p>
-                <div className="flex items-center relative border inputx-12 rounded">
-                  <input
-                    className="px-5 py-2"
-                    name="duration"
-                    type="text"
-                    value={updatedHabit.location.name}
-                    required
-                    disabled
-                  />
-                </div>
-              </div>
+          {updatedHabit.location ? (
+            <div className="flex flex-col gap-2 w-full h-52">
+              <p className="font-bold">Location:</p>
+              <MapComponent position={updatedHabit.location.position} singleLocation={updatedHabit.location} />
             </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-4">
+              <p className="font-bold">Location:</p>
+              <input
+                name="location"
+                type="location"
+                onChange={handleChange}
+                className="border inputx-12 px-4 py-1 rounded"
+                value="Home"
+                disabled
+              />
+            </div>
+            {formErrors.date && <ErrorMessage text={formErrors.date} />}
+          </div>
           )}
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-4">
