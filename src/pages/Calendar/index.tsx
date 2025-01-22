@@ -28,6 +28,7 @@ import HabitDetails from "./HabitDetails";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { categoryColors } from "../../utils/categoryColors";
 import { useLocation } from "react-router";
+import { getCurrentTime, getTomorrowDate } from "../../utils/datesUtils";
 
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -39,9 +40,9 @@ const CalendarPage = () => {
     name: "",
     category: HabitCategories.Sports,
     frequency: "Daily",
-    timeOfDay: "10:00",
+    timeOfDay: getCurrentTime(),
     duration: 20,
-    date: "",
+    date: getTomorrowDate(),
     eventDate: "",
     completedDays: [],
   });
@@ -49,9 +50,9 @@ const CalendarPage = () => {
     name: "",
     category: HabitCategories.Sports,
     frequency: "Daily",
-    timeOfDay: "10:00",
+    timeOfDay:  getCurrentTime(),
     duration: 20,
-    date: "",
+    date: getTomorrowDate(),
     completedDays: [],
   });
   const [isHome, setIsHome] = useState(true);

@@ -6,7 +6,7 @@ import { useDispatch } from "react-redux";
 import { getHabits } from "../../redux/habitsActions";
 import { AppDispatch } from "../../redux/store";
 import { useTypedSelector } from "../Calendar";
-import { getLastNDays } from "../../utils/getLastNDays";
+import { getLastNDays } from "../../utils/datesUtils";
 import { categoryColors } from "../../utils/categoryColors";
 import ChartComponent from "./Chart";
 
