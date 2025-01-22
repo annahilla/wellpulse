@@ -49,7 +49,7 @@ const MapComponent = ({
 
   return (
     <MapContainer center={position} zoom={13}>
-      <div className="flex flex-col gap-2 p-4 bg-white absolute top-3 left-3 z-[3000] shadow-md rounded-sm">
+      <div className="grid grid-cols-3 gap-2 p-4 bg-white absolute bottom-3 right-3 z-[400] shadow-md rounded-sm">
         {allCategories.map((category: LocationCategories) => (
           <label key={category} className="flex items-center gap-1 text-sm">
             <input
