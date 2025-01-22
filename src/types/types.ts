@@ -46,6 +46,20 @@ export interface HabitDetailsInterface {
     completedDays: string[];
 }
 
+export enum LocationCategories {
+    Parks = "Parks",
+    Cafes = "Cafes",
+    Gyms = "Gyms",
+    CivicCenters = "Civic Centers",
+    HealthyRestaurants = "Healthy Restaurants",
+    RelaxZones = "Relax Zones",
+    Coworking = "Coworking",
+    OutdoorSports = "Outdoor Sports",
+    Libraries = "Libraries",
+    HikingRoutes = "Hiking Routes",
+    CraftWorkshops = "Craft Workshops"
+}
+
 export type LocationCategory =
   | "parks"
   | "cafes"
