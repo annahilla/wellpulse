@@ -185,16 +185,18 @@ const CalendarPage = () => {
   };
 
   const handleTimeSlotClick = (arg: DateSelectArg) => {
-    const time = arg.start.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    const time = arg.start;
+    const hours = time.getHours();
+    const minutes = time.getMinutes();
+    
+    const formattedTime = `${hours < 10 ? '0' : ''}${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
 
     setNewHabit((prevHabit) => ({
       ...prevHabit,
-      timeOfDay: time,
+      timeOfDay: formattedTime,
     }));
 
+    console.log(newHabit)
     openFormModal();
   };
 
@@ -274,6 +276,7 @@ const CalendarPage = () => {
                   slotMaxTime: "23:00:00",
                 },
               }}
+
             />
           </div>
           <AddHabitForm
