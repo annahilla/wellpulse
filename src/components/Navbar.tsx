@@ -51,7 +51,7 @@ const Navbar = () => {
           ref={navbarRef}
           className={`${
             isMenuOpen ? "block" : "hidden"
-          } z-50 flex py-10 absolute uppercase top-20 left-0 bg-white w-full flex-col justify-between items-center gap-10 md:bg-transparent md:py-0 md:w-auto md:flex md:flex-row xl:gap-20 md:relative md:top-0 md:left-0`}
+          } z-[1000] flex py-10 absolute uppercase top-20 left-1/2 transform -translate-x-1/2 bg-white w-screen flex-col justify-between items-center gap-10 md:bg-transparent md:py-0 md:w-auto md:flex md:flex-row xl:gap-20 md:relative md:top-0 md:right-0 md:w-full`}
         >
           {isLoggedIn ? (
             <>
