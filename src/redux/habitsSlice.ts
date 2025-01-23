@@ -3,11 +3,13 @@ import { Habit } from '../types/types';
 
 interface HabitsState {
     habits: Habit[];
+    loading: boolean;
     error: string | null;
 }
 
 const initialState: HabitsState = {
     habits: [],
+    loading: false,
     error: null,
 };
 
@@ -33,9 +35,12 @@ const habitsSlice = createSlice({
         setError(state, action: PayloadAction<string>) {
             state.error = action.payload;
         },
+        setLoading(state, action: PayloadAction<boolean>){
+            state.loading = action.payload;
+        }
     },
 });
 
-export const { setHabits, addHabit, removeHabit, updateHabit, setError } = habitsSlice.actions;
+export const { setHabits, addHabit, removeHabit, updateHabit, setError, setLoading } = habitsSlice.actions;
 
 export default habitsSlice.reducer;

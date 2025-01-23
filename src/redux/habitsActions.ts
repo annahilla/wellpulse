@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { addHabit, removeHabit, setHabits, updateHabit, } from "./habitsSlice";
+import { addHabit, removeHabit, setHabits, setLoading, updateHabit, } from "./habitsSlice";
 import { Habit } from "../types/types";
 import { RootState } from "./store";
 import { auth } from "../firebaseConfig";
@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 export const createHabit = createAsyncThunk(
   "habits/createHabit",
   async (habit: Habit, { getState, dispatch, rejectWithValue  }) => {
+    dispatch(setLoading(true));
+    
     let token = (getState() as RootState).user.token;
 
     if (!token) {
@@ -18,12 +20,14 @@ export const createHabit = createAsyncThunk(
           console.log("Refreshed Firebase token:", token);
         } catch (error) {
           console.error("Failed to refresh token:", error);
+          dispatch(setLoading(false));
           return rejectWithValue("No token available or failed to refresh token.");
         }
       }
     }
 
     if (!token) {
+      dispatch(setLoading(false));
       throw new Error("No token available");
     }
     
@@ -43,9 +47,11 @@ export const createHabit = createAsyncThunk(
       if (response.ok) {
         toast.success("Habit created successfully!");
         dispatch(addHabit(data.habit));
+        dispatch(setLoading(false));
         return data.habit;
       } else {
         toast.error("There was an error creating the habit.");
+        dispatch(setLoading(false));
         throw new Error(data.message || "Failed to create habit");
       }
     } catch (error) {
@@ -59,6 +65,8 @@ export const createHabit = createAsyncThunk(
 export const getHabits = createAsyncThunk(
   "habits/getHabits",
   async (_, { dispatch, getState, rejectWithValue }) => {
+    dispatch(setLoading(true));
+
     let token = (getState() as RootState).user.token;
 
     if (!token) {
@@ -69,12 +77,14 @@ export const getHabits = createAsyncThunk(
           console.log("Refreshed Firebase token:", token);
         } catch (error) {
           console.error("Failed to refresh token:", error);
+          dispatch(setLoading(false));
           return rejectWithValue("No token available or failed to refresh token.");
         }
       }
     }
     
     if (!token) {
+      dispatch(setLoading(false));
       throw new Error("No token available");
     }
 
@@ -91,8 +101,10 @@ export const getHabits = createAsyncThunk(
 
       if (response.ok) {
         dispatch(setHabits(data.data));
+        dispatch(setLoading(false));
         return data.data;
       } else {
+        dispatch(setLoading(false));
         throw new Error(data.message || "Failed to get habits");
       }
     } catch (error) {

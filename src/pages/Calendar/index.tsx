@@ -29,6 +29,7 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import { categoryColors } from "../../utils/categoryColors";
 import { useLocation } from "react-router";
 import { getCurrentTime, getTomorrowDate } from "../../utils/datesUtils";
+import Spinner from "../../components/ui/Spinner";
 
 export const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -60,6 +61,7 @@ const CalendarPage = () => {
   const { habits } = useTypedSelector((state) => state.habits);
   const dispatch = useDispatch<AppDispatch>();
   const toolbarConfig = useToolbarConfig();
+  const loading = useSelector((state: RootState) => state.habits.loading);
 
   const closeFormModal = () => setIsFormModalOpen(false);
   const openFormModal = () => setIsFormModalOpen(true);
@@ -229,66 +231,72 @@ const CalendarPage = () => {
   };
 
   return (
-    <div className="mb-12">
-      <div className="my-4 flex items-center justify-center md:justify-end">
-        <Button
-          isDisabled={false}
-          handleClick={openFormModal}
-          type="primary"
-          size="sm"
-          textSize="text-md"
-        >
-          Add Habit
-        </Button>
-      </div>
-      <div>
-        <FullCalendar
-          timeZone="local"
-          plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
-          key={toolbarConfig.initialView}
-          headerToolbar={toolbarConfig}
-          initialView={toolbarConfig.initialView}
-          editable={false}
-          selectable={true}
-          selectMirror={true}
-          dayMaxEvents={true}
-          events={events}
-          eventClick={handleEventClick}
-          dateClick={handleDateClick}
-          select={handleTimeSlotClick}
-          eventContent={(eventInfo) => renderEventContent(eventInfo, habits)}
-          eventDidMount={handleEventMount}
-          views={{
-            timeGridDay: {
-              slotMinTime: "06:00:00",
-              slotMaxTime: "23:00:00",
-            },
-            timeGridWeek: {
-              dayHeaderFormat: { weekday: "short" },
-              slotMinTime: "06:00:00",
-              slotMaxTime: "23:00:00",
-            },
-          }}
-        />
-      </div>
-      <AddHabitForm
-        isFormModalOpen={isFormModalOpen}
-        closeFormModal={closeFormModal}
-        createHabitHandler={createHabitHandler}
-        handleInputChange={handleInputChange}
-        addLocation={addLocation}
-        newHabit={newHabit}
-        isHome={isHome}
-        handleIsHome={handleIsHome}
-      />
-      <HabitDetails
-        isHabitModalOpen={isHabitModalOpen}
-        habit={selectedHabit}
-        closeHabitModal={closeHabitModal}
-      />
+    <div>
+      {loading ? (
+        <Spinner />
+      ) : (
+        <div className="mb-12">
+          <div className="my-4 flex items-center justify-center md:justify-end">
+            <Button
+              isDisabled={false}
+              handleClick={openFormModal}
+              type="primary"
+              size="sm"
+              textSize="text-md"
+            >
+              Add Habit
+            </Button>
+          </div>
+          <div>
+            <FullCalendar
+              timeZone="local"
+              plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin]}
+              key={toolbarConfig.initialView}
+              headerToolbar={toolbarConfig}
+              initialView={toolbarConfig.initialView}
+              editable={false}
+              selectable={true}
+              selectMirror={true}
+              dayMaxEvents={true}
+              events={events}
+              eventClick={handleEventClick}
+              dateClick={handleDateClick}
+              select={handleTimeSlotClick}
+              eventContent={(eventInfo) => renderEventContent(eventInfo, habits)}
+              eventDidMount={handleEventMount}
+              views={{
+                timeGridDay: {
+                  slotMinTime: "06:00:00",
+                  slotMaxTime: "23:00:00",
+                },
+                timeGridWeek: {
+                  dayHeaderFormat: { weekday: "short" },
+                  slotMinTime: "06:00:00",
+                  slotMaxTime: "23:00:00",
+                },
+              }}
+            />
+          </div>
+          <AddHabitForm
+            isFormModalOpen={isFormModalOpen}
+            closeFormModal={closeFormModal}
+            createHabitHandler={createHabitHandler}
+            handleInputChange={handleInputChange}
+            addLocation={addLocation}
+            newHabit={newHabit}
+            isHome={isHome}
+            handleIsHome={handleIsHome}
+          />
+          <HabitDetails
+            isHabitModalOpen={isHabitModalOpen}
+            habit={selectedHabit}
+            closeHabitModal={closeHabitModal}
+          />
+        </div>
+      )}
     </div>
   );
-};
+}  
 
 const renderEventContent = (eventInfo: EventContentArg, habits: Habit[]) => {
   const habit = habits.find((habit) => habit._id === eventInfo.event.id);

@@ -2,18 +2,20 @@ import { useState, useEffect } from "react";
 import Chart from "chart.js/auto";
 import { CategoryScale, ChartData } from "chart.js";
 import { HabitCategories, Habit } from "../../types/types";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getHabits } from "../../redux/habitsActions";
-import { AppDispatch } from "../../redux/store";
+import { AppDispatch, RootState } from "../../redux/store";
 import { useTypedSelector } from "../Calendar";
 import { getLastNDays } from "../../utils/datesUtils";
 import { categoryColors } from "../../utils/categoryColors";
 import ChartComponent from "./Chart";
+import Spinner from "../../components/ui/Spinner";
 
 Chart.register(CategoryScale);
 
 const ProgressPage = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const loading = useSelector((state: RootState) => state.habits.loading);
   const { habits } = useTypedSelector((state) => state.habits);
 
   const [habitsByCategoryChartData, setHabitsByCategoryChartData] = useState<
@@ -195,7 +197,11 @@ const ProgressPage = () => {
   }, [habits]);
 
   return (
-    <div className="mx-10 grid grid-cols-1 items-center gap-20 my-10 m-auto md:grid-cols-2 md:gap-10 lg:grid-cols-3">
+    <div>
+      { loading ? (
+        <Spinner />
+      ) : (
+        <div className="mx-10 grid grid-cols-1 items-center gap-20 my-10 m-auto md:grid-cols-2 md:gap-10 lg:grid-cols-3">
       <ChartComponent
         chartType="pie"
         title="Habits scheduled by Category"
@@ -223,6 +229,8 @@ const ProgressPage = () => {
           chartData={chartData}
         />
       ))}
+    </div>
+      )}
     </div>
   );
 };

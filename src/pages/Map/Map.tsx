@@ -24,7 +24,7 @@ const MapComponent = ({
   position = [41.3874, 2.1686],
 }: MapComponentProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { locations } = useTypedSelector((state) => state.locations);
+  const { locations, loading } = useTypedSelector((state) => state.locations);
   const [selectedPlace, setSelectedPlace] = useState<LocationInterface | null>(
     null
   );
@@ -37,10 +37,10 @@ const MapComponent = ({
   const allCategories = Object.values(LocationCategories);
 
   useEffect(() => {
-    if (!singleLocation) {
+    if (!singleLocation && !loading && locations.length === 0) {
       dispatch(getLocations());
     }
-  }, [dispatch]);
+  }, [dispatch, loading, locations.length, singleLocation]);
 
   const handleCategoryChange = (category: LocationCategories) => {
     setSelectedCategories((prevCategories) =>
