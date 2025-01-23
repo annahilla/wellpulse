@@ -25,10 +25,10 @@ const HabitDetails = ({
   const dispatch = useDispatch<AppDispatch>();
   const [updatedHabit, setUpdatedHabit] =
     useState<HabitDetailsInterface>(habit);
+  const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
   const { categories, frequencies } = useHabitOptions();
   const { formErrors, validateForm } = useFormValidation(updatedHabit, false);
   const { _id, eventDate } = habit;
-
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -96,21 +96,59 @@ const HabitDetails = ({
     }
   };
 
-  const handleDeleteHabit = async () => {
-    try {
-      if (habit && habit._id !== undefined) {
-        await dispatch(deleteHabit(habit._id));
-        closeHabitModal();
-        toast.success("Habit deleted successfully!");
-      }
-    } catch (err) {
-      console.error("Error creating habit: ", err);
-      toast.error("There was an error deleting the habit.");
-    }
+  const handleDeleteHabit = () => {
+    closeHabitModal();
+    setIsConfirmDeleteModalOpen(true);
+    
   };
 
+const closeConfirmDeleteModal = () => {
+  setIsConfirmDeleteModalOpen(false);
+}
+
+const confirmDeleteHabit = async () => {
+  try {
+    if (habit && habit._id !== undefined) {
+      await dispatch(deleteHabit(habit._id));
+      setIsConfirmDeleteModalOpen(false)
+      toast.success("Habit deleted successfully!");
+    }
+  } catch (err) {
+    console.error("Error creating habit: ", err);
+    toast.error("There was an error deleting the habit.");
+  }
+}
+
   return (
-    <Modal isOpen={isHabitModalOpen} closeModal={closeHabitModal}>
+    <>
+      <Modal isOpen={isConfirmDeleteModalOpen} closeModal={closeConfirmDeleteModal}>
+        <div className="flex flex-col gap-3 items-center">
+        <p className="m-auto">Are you sure you want to delete this habit?</p>
+        <div className="flex gap-2">
+        <div className="flex items-center m-auto gap-6 mt-7">
+            <Button
+              isDisabled={false}
+              type="primary"
+              textSize="text-md"
+              size="sm"
+              handleClick={confirmDeleteHabit}
+            >
+              Yes
+            </Button>
+            <Button
+              isDisabled={false}
+              handleClick={() => setIsConfirmDeleteModalOpen(false)}
+              type="secondary"
+              textSize="text-md"
+              size="sm"
+            >
+              No
+            </Button>
+          </div>
+        </div>
+        </div>
+      </Modal>
+      <Modal isOpen={isHabitModalOpen} closeModal={closeHabitModal}>
       <h3 className="text-2xl text-center font-bold mb-8">Edit your habit</h3>
       <div className="flex flex-col items-center">
         <form
@@ -273,6 +311,7 @@ const HabitDetails = ({
         </form>
       </div>
     </Modal>
+    </>
   );
 };
 
