@@ -62,7 +62,6 @@ const CalendarPage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const toolbarConfig = useToolbarConfig();
   const loading = useSelector((state: RootState) => state.habits.loading);
-
   const closeFormModal = () => setIsFormModalOpen(false);
   const openFormModal = () => setIsFormModalOpen(true);
 

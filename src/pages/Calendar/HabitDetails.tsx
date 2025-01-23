@@ -43,6 +43,7 @@ const HabitDetails = ({
       ...prevHabit,
       [name]: value,
     }));
+    validateForm();
   };
 
   const handleCompletionChange = (event: ChangeEvent<HTMLInputElement>) => {

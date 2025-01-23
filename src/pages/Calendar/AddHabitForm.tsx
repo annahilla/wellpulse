@@ -41,6 +41,11 @@ const AddHabitForm = ({
     addLocation(place);
   };
 
+  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    handleInputChange(event);
+    validateForm();
+  }
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -62,7 +67,7 @@ const AddHabitForm = ({
         <div className="flex flex-col gap-2">
           <label htmlFor="name">What habit do you want to incorporate?</label>
           <input
-            onChange={handleInputChange}
+            onChange={handleOnChange}
             className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
             type="text"
             name="name"
@@ -77,7 +82,7 @@ const AddHabitForm = ({
             What category does this habit belong to?
           </label>
           <select
-            onChange={handleInputChange}
+            onChange={handleOnChange}
             className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
             name="category"
             value={newHabit.category}
@@ -95,7 +100,7 @@ const AddHabitForm = ({
         <div className="flex flex-col gap-2">
           <label htmlFor="frequency">How often would you like to do it?</label>
           <select
-            onChange={handleInputChange}
+            onChange={handleOnChange}
             className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
             name="frequency"
             value={newHabit.frequency}
@@ -115,7 +120,7 @@ const AddHabitForm = ({
             When during the day would you like to do it?
           </label>
           <input
-            onChange={handleInputChange}
+            onChange={handleOnChange}
             className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
             name="timeOfDay"
             type="time"
@@ -130,7 +135,7 @@ const AddHabitForm = ({
           </label>
           <div className="relative flex items-center rounded border border-neutral-200 active:outline-none focus:outline-none">
             <input
-              onChange={handleInputChange}
+              onChange={handleOnChange}
               className="px-5 py-2"
               name="duration"
               type="number"
@@ -147,7 +152,7 @@ const AddHabitForm = ({
         <div className="flex flex-col gap-2">
           <label htmlFor="date">When do you want to start this habit?</label>
           <input
-            onChange={handleInputChange}
+            onChange={handleOnChange}
             className="px-5 py-2 rounded border border-neutral-200 focus:outline-none"
             name="date"
             type="date"
