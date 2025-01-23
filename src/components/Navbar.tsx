@@ -42,7 +42,7 @@ const Navbar = () => {
         <h3 className="text-xl lg:text-2xl uppercase">WellPulse</h3>
       </NavLink>
 
-      <div className="">
+      <div>
         <button onClick={toggleMenu} className="z-[1000] md:hidden" ref={hamburgerRef}>
           <AiOutlineMenu size={27} />
         </button>

@@ -2,7 +2,7 @@ import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { LatLngExpression, LatLngTuple } from "leaflet";
 import { LocationCategories, LocationInterface } from "../../types/types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTypedSelector } from "../Calendar";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../redux/store";
@@ -10,6 +10,7 @@ import { getLocations } from "../../redux/locationsActions";
 import { Link } from "react-router";
 import Button from "../../components/ui/Button";
 import { mapIcons } from "../../utils/mapIcons";
+import { FaFilter } from "react-icons/fa";
 
 interface MapComponentProps {
   selectLocation?: (place: LocationInterface) => void;
@@ -30,6 +31,8 @@ const MapComponent = ({
   const [selectedCategories, setSelectedCategories] = useState<
     LocationCategories[]
   >([]);
+  const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
+  const filterRef = useRef<HTMLButtonElement>(null);
 
   const allCategories = Object.values(LocationCategories);
 
@@ -47,11 +50,18 @@ const MapComponent = ({
     );
   };
 
+  const toggleFilterMenu = () => {
+    setIsFilterMenuOpen(!isFilterMenuOpen);
+  };
+
   return (
     <MapContainer center={position} zoom={13}>
-      <div className="grid grid-cols-3 gap-2 p-4 bg-white absolute bottom-3 right-3 z-[400] shadow-md rounded-sm">
+      <button onClick={toggleFilterMenu} className="bg-blue-400 text-white p-3 rounded-full absolute bottom-2 right-2 z-[1000] md:hidden" ref={filterRef}>
+          <FaFilter  size={16} />
+        </button>
+      <div className={`${isFilterMenuOpen ? "block" : "hidden"} grid grid-cols-2 gap-1 p-4 bg-white absolute w-full bottom-0 pb-5 right-0 z-[400] rounded-sm md:block md:bottom-3 md:right-3 md:p-4 md:gap-2 md:grid-cols-3 md:pb-0 sm:w-auto`}>
         {allCategories.map((category: LocationCategories) => (
-          <label key={category} className="flex items-center gap-1 text-sm">
+          <label key={category} className="flex items-center gap-1 text-xs md:text-sm">
             <input
               type="checkbox"
               checked={selectedCategories.includes(category)}
