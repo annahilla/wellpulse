@@ -1,9 +1,9 @@
-import { NavLink, useNavigate } from "react-router";
+import { NavLink, useLocation, useNavigate } from "react-router";
 import Button from "./ui/Button";
 import logo from "../assets/logo.png";
 import NavItem from "./ui/NavItem";
 import { AiOutlineMenu } from "react-icons/ai";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import { logoutUser } from "../redux/authActions";
@@ -18,11 +18,15 @@ const Navbar = () => {
   const hamburgerRef = useRef<HTMLButtonElement>(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-
+  const location = useLocation();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location]);
 
   const handleLogout = () => {
     dispatch(logoutUser());
@@ -32,14 +36,14 @@ const Navbar = () => {
   useClickOutside(navbarRef, () => setIsMenuOpen(false), hamburgerRef);
 
   return (
-    <nav className="relative py-10 flex justify-between items-center">
+    <nav className="relative py-10 flex justify-between items-center z-[1000]">
       <NavLink to="/" className="flex items-center justify-center gap-3">
         <img className="h-8" src={logo} alt="WellPulse logo" />
         <h3 className="text-xl lg:text-2xl uppercase">WellPulse</h3>
       </NavLink>
 
       <div className="">
-        <button onClick={toggleMenu} className="md:hidden" ref={hamburgerRef}>
+        <button onClick={toggleMenu} className="z-[1000] md:hidden" ref={hamburgerRef}>
           <AiOutlineMenu size={27} />
         </button>
 
