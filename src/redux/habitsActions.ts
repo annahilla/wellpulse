@@ -4,6 +4,7 @@ import { Habit } from "../types/types";
 import { RootState } from "./store";
 import { auth } from "../firebaseConfig";
 import { toast } from "react-toastify";
+import { API_BASE_URL } from '../config/api';
 
 export const createHabit = createAsyncThunk(
   "habits/createHabit",
@@ -33,7 +34,7 @@ export const createHabit = createAsyncThunk(
     
 
     try {
-      const response = await fetch("http://localhost:5000/api/habits", {
+      const response = await fetch(`${API_BASE_URL}/api/habits`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +90,7 @@ export const getHabits = createAsyncThunk(
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/habits", {
+      const response = await fetch(`${API_BASE_URL}/api/habits`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -137,7 +138,7 @@ export const deleteHabit = createAsyncThunk(
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/habits/${habitId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/habits/${habitId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -185,7 +186,7 @@ export const updateHabitAsync = createAsyncThunk(
     }
 
     try {
-      const response = await fetch(`http://localhost:5000/api/habits/${habitId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/habits/${habitId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

@@ -41,10 +41,12 @@ const AddHabitForm = ({
     addLocation(place);
   };
 
-  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleOnChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     handleInputChange(event);
     validateForm();
-  }
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config/api';
 
 const useHabitOptions = () => {
   const [categories, setCategories] = useState<string[]>([]);
@@ -7,7 +8,7 @@ const useHabitOptions = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/options/categories");
+        const response = await fetch(`${API_BASE_URL}/api/options/categories`);
         const data = await response.json();
         if (data.success) {
           setCategories(data.categories);
@@ -21,7 +22,7 @@ const useHabitOptions = () => {
 
     const fetchFrequencies = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/options/frequencies");
+        const response = await fetch(`${API_BASE_URL}/api/options/frequencies`);
         const data = await response.json();
         if (data.success) {
           setFrequencies(data.frequencies);

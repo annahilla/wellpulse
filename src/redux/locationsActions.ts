@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { setLoading, setLocations } from "./locationsSlice";
+import { API_BASE_URL } from '../config/api';
 
 export const getLocations = createAsyncThunk(
   "locations/getLocations",
@@ -7,7 +8,7 @@ export const getLocations = createAsyncThunk(
     dispatch(setLoading(true));
 
     try {
-      const response = await fetch("http://localhost:5000/api/locations");
+      const response = await fetch(`${API_BASE_URL}/api/locations`);
       const data = await response.json();
 
       if (response.ok) {
