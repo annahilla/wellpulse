@@ -36,7 +36,7 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(sendUserToken.fulfilled, (state, action) => {
+    builder.addCase(sendUserToken.fulfilled, () => {
       console.log('Token sent to backend successfully');
     });
     builder.addCase(sendUserToken.rejected, (state, action) => {
