@@ -79,7 +79,12 @@ const LoginPage = () => {
             value={password}
           />
         </div>
-        <Button isDisabled={error ? true: false} type="primary" textSize="text-md" size="sm">
+        <Button
+          isDisabled={error ? true : false}
+          type="primary"
+          textSize="text-md"
+          size="sm"
+        >
           Login
         </Button>
         <button
@@ -95,7 +100,6 @@ const LoginPage = () => {
           Don't have an account?
         </Link>
       </form>
-      
     </div>
   );
 };

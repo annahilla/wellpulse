@@ -10,6 +10,8 @@ import { getLastNDays } from "../../utils/datesUtils";
 import { categoryColors } from "../../utils/categoryColors";
 import ChartComponent from "./Chart";
 import Spinner from "../../components/ui/Spinner";
+import Button from "../../components/ui/Button";
+import { useStartNow } from "../../hooks/useStartNow";
 
 Chart.register(CategoryScale);
 
@@ -17,6 +19,7 @@ const ProgressPage = () => {
   const dispatch = useDispatch<AppDispatch>();
   const loading = useSelector((state: RootState) => state.habits.loading);
   const { habits } = useTypedSelector((state) => state.habits);
+  const handleStartNow = useStartNow();
 
   const [habitsByCategoryChartData, setHabitsByCategoryChartData] = useState<
     ChartData<"pie">
@@ -75,20 +78,19 @@ const ProgressPage = () => {
     let totalEvents;
 
     const diffInTime = currentDate.getTime() - startDate.getTime();
-    
-    if(habit.frequency === 'Daily') {
+
+    if (habit.frequency === "Daily") {
       totalEvents = Math.ceil(diffInTime / (1000 * 3600 * 24));
-    } else if(habit.frequency === 'Weekly') {
+    } else if (habit.frequency === "Weekly") {
       totalEvents = Math.ceil(diffInTime / (1000 * 3600 * 24 * 7));
     } else {
       totalEvents = 0;
     }
-    
+
     if (totalEvents < 0) totalEvents = 0;
 
     return totalEvents;
   };
-
 
   const calculatePieChartData = (habit: Habit) => {
     const totalEvents = totalEventsByHabit(habit);
@@ -197,41 +199,58 @@ const ProgressPage = () => {
   }, [habits]);
 
   return (
-    <div>
-      { loading ? (
+    <>
+      {loading ? (
         <Spinner />
-      ) : (
+      ) : habits.length > 0 ? (
         <div className="mx-10 grid grid-cols-1 items-center gap-20 my-10 m-auto md:grid-cols-2 md:gap-10 lg:grid-cols-3">
-      <ChartComponent
-        chartType="pie"
-        title="Habits scheduled by Category"
-        subtitle="Number of habits scheduled by category"
-        chartData={habitsByCategoryChartData}
-      />
-      <ChartComponent
-        chartType="line"
-        title="Completion of Habits"
-        subtitle="Habits completed per category over the last 10 days"
-        chartData={completedHabitsChartData}
-      />
-      <ChartComponent
-        chartType="bar"
-        title="Habits completed by Category"
-        subtitle="Total of habits completed by category"
-        chartData={totalCompletedHabitsByCategory}
-      />
-      {habitPieCharts.map(({ habitName, chartData }, index) => (
-        <ChartComponent
-          chartType="pie"
-          key={index}
-          title={habitName}
-          subtitle={`Progress for ${habitName}`}
-          chartData={chartData}
-        />
-      ))}
-    </div>
+          <ChartComponent
+            chartType="pie"
+            title="Habits scheduled by Category"
+            subtitle="Number of habits scheduled by category"
+            chartData={habitsByCategoryChartData}
+          />
+          <ChartComponent
+            chartType="line"
+            title="Completion of Habits"
+            subtitle="Habits completed per category over the last 10 days"
+            chartData={completedHabitsChartData}
+          />
+          <ChartComponent
+            chartType="bar"
+            title="Habits completed by Category"
+            subtitle="Total of habits completed by category"
+            chartData={totalCompletedHabitsByCategory}
+          />
+          {habitPieCharts.map(({ habitName, chartData }, index) => (
+            <ChartComponent
+              chartType="pie"
+              key={index}
+              title={habitName}
+              subtitle={`Progress for ${habitName}`}
+              chartData={chartData}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4 justify-center items-center min-h-56 px-4 m-auto text-center md:w-2/3 md:px-0">
+          <p className="text-2xl font-bold">Ups...</p>
+          <p className="text-lg">
+            There are no charts available since there are no habits yet. To
+            start tracking your progress create some habits first.
+          </p>
+          <Button
+            size="sm"
+            type="primary"
+            textSize="text-md"
+            isDisabled={false}
+            handleClick={handleStartNow}
+          >
+            Create Habit
+          </Button>
+        </div>
       )}
-    </div>
+    </>
   );
 };
 

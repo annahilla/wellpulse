@@ -5,7 +5,11 @@ import { FormEvent, useEffect, useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 import { setError } from "../redux/authSlice.ts";
-import { loginUserWithGoogle, signUpUser } from "../redux/authActions.ts";
+import {
+  loginUser,
+  loginUserWithGoogle,
+  signUpUser,
+} from "../redux/authActions.ts";
 import { AppDispatch, RootState } from "../redux/store.ts";
 import ErrorMessage from "../components/ui/ErrorMessage.tsx";
 
@@ -31,6 +35,7 @@ const SignUpPage = () => {
     e.preventDefault();
     try {
       await dispatch(signUpUser({ email, password })).unwrap();
+      await dispatch(loginUser({ email, password })).unwrap();
       navigate("/calendar");
     } catch (err) {
       console.error("Error during sign up:", err);
@@ -79,7 +84,12 @@ const SignUpPage = () => {
             value={password}
           />
         </div>
-        <Button isDisabled={error ? true: false} type="primary" textSize="text-md" size="sm">
+        <Button
+          isDisabled={error ? true : false}
+          type="primary"
+          textSize="text-md"
+          size="sm"
+        >
           Sign Up
         </Button>
         <button
