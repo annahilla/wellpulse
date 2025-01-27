@@ -1,6 +1,6 @@
 import "leaflet/dist/leaflet.css";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import { LatLngExpression, LatLngTuple } from "leaflet";
+import { LatLngExpression } from "leaflet";
 import { LocationCategories, LocationInterface } from "../../types/types";
 import { useEffect, useRef, useState } from "react";
 import { useTypedSelector } from "../Calendar";
