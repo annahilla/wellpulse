@@ -276,7 +276,6 @@ const CalendarPage = () => {
                   slotMaxTime: "23:00:00",
                 },
               }}
-
             />
           </div>
           <AddHabitForm

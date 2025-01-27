@@ -69,7 +69,7 @@ const ChartComponent = ({
         : undefined,
     responsive: true,
     maintainAspectRatio: true,
-    aspectRatio: 1 / 1,
+    aspectRatio: 1,
   });
 
   return (

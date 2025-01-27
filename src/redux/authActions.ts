@@ -52,12 +52,12 @@ export const loginUser = createAsyncThunk(
       thunkAPI.dispatch(setUser(userData));
       return userData;
     } catch (error: any) {
-      if(error.code === "auth/invalid-credential") {
-        const errorMessage = "Your email or password are incorrect."
+      if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password") {
+        const errorMessage = "Your email or password are incorrect.";
         thunkAPI.dispatch(setError(errorMessage));
         return thunkAPI.rejectWithValue(errorMessage);
       } else {
-        const errorMessage = "Your email or password are incorrect."
+        const errorMessage = "An unknown error occurred.";
         thunkAPI.dispatch(setError(errorMessage));
         return thunkAPI.rejectWithValue(errorMessage);
       }
