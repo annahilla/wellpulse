@@ -1,116 +1,51 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { addHabit, removeHabit, setHabits, setLoading, updateHabit, } from "./habitsSlice";
+import { addHabit, removeHabit, setHabits, setLoading, updateHabit } from "./habitsSlice";
 import { Habit } from "../types/types";
 import { RootState } from "./store";
-import { auth } from "../firebaseConfig";
 import { toast } from "react-toastify";
+import { fetchWithAuth } from "../utils/fetchWithAuth"; // Importem la funció utilitària
 import { API_BASE_URL } from '../config/api';
 
 export const createHabit = createAsyncThunk(
   "habits/createHabit",
-  async (habit: Habit, { getState, dispatch, rejectWithValue  }) => {
+  async (habit: Habit, { getState, dispatch, rejectWithValue }) => {
     dispatch(setLoading(true));
-    
+
     let token = (getState() as RootState).user.token;
 
-    if (!token) {
-      const user = auth.currentUser;
-      if (user) {
-        try {
-          token = await user.getIdToken(true);
-          console.log("Refreshed Firebase token:", token);
-        } catch (error) {
-          console.error("Failed to refresh token:", error);
-          dispatch(setLoading(false));
-          return rejectWithValue("No token available or failed to refresh token.");
-        }
-      }
-    }
-
-    if (!token) {
-      dispatch(setLoading(false));
-      throw new Error("No token available");
-    }
-    
-
     try {
-      const response = await fetch(`${API_BASE_URL}/api/habits`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify(habit),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success("Habit created successfully!");
-        dispatch(addHabit(data.habit));
-        dispatch(setLoading(false));
-        return data.habit;
-      } else {
+      const data = await fetchWithAuth(`${API_BASE_URL}/api/habits`, 'POST', token, habit);
+      toast.success("Habit created successfully!");
+      dispatch(addHabit(data.habit));
+      dispatch(setLoading(false));
+      return data.habit;
+    } catch (error) {
+      if(error instanceof Error) {
         toast.error("There was an error creating the habit.");
         dispatch(setLoading(false));
-        throw new Error(data.message || "Failed to create habit");
+        return rejectWithValue(error.message);
       }
-    } catch (error) {
-      
-      console.error("Error creating habit:", error);
-      throw error;
     }
   }
 );
 
 export const getHabits = createAsyncThunk(
   "habits/getHabits",
-  async (_, { dispatch, getState, rejectWithValue }) => {
+  async (_, { getState, dispatch, rejectWithValue }) => {
     dispatch(setLoading(true));
-
+    
     let token = (getState() as RootState).user.token;
 
-    if (!token) {
-      const user = auth.currentUser;
-      if (user) {
-        try {
-          token = await user.getIdToken(true);
-          console.log("Refreshed Firebase token:", token);
-        } catch (error) {
-          console.error("Failed to refresh token:", error);
-          dispatch(setLoading(false));
-          return rejectWithValue("No token available or failed to refresh token.");
-        }
-      }
-    }
-    
-    if (!token) {
-      dispatch(setLoading(false));
-      throw new Error("No token available");
-    }
-
     try {
-      const response = await fetch(`${API_BASE_URL}/api/habits`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        }
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        dispatch(setHabits(data.data));
-        dispatch(setLoading(false));
-        return data.data;
-      } else {
-        dispatch(setLoading(false));
-        throw new Error(data.message || "Failed to get habits");
-      }
+      const data = await fetchWithAuth(`${API_BASE_URL}/api/habits`, 'GET', token);
+      dispatch(setHabits(data.data));
+      dispatch(setLoading(false));
+      return data.data;
     } catch (error) {
-      console.error("Error getting habits:", error);
-      throw error;
+      if(error instanceof Error) {
+        dispatch(setLoading(false));
+      return rejectWithValue(error.message);
+      }
     }
   }
 );
@@ -120,43 +55,15 @@ export const deleteHabit = createAsyncThunk(
   async (habitId: string, { getState, dispatch, rejectWithValue }) => {
     let token = (getState() as RootState).user.token;
 
-    if (!token) {
-      const user = auth.currentUser;
-      if (user) {
-        try {
-          token = await user.getIdToken(true);
-          console.log('Refreshed Firebase token:', token);
-        } catch (error) {
-          console.error('Failed to refresh token:', error);
-          return rejectWithValue('No token available or failed to refresh token.');
-        }
-      }
-    }
-
-    if (!token) {
-      throw new Error('No token available');
-    }
-
     try {
-      const response = await fetch(`${API_BASE_URL}/api/habits/${habitId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        dispatch(removeHabit(habitId));
-        return habitId;
-      } else {
-        throw new Error(data.message || 'Failed to delete habit');
-      }
+      await fetchWithAuth(`${API_BASE_URL}/api/habits/${habitId}`, 'DELETE', token);
+      dispatch(removeHabit(habitId));
+      return habitId;
     } catch (error) {
-      console.error('Error deleting habit:', error);
-      throw error;
+      if(error instanceof Error) {
+        toast.error("There was an error deleting the habit.");
+        return rejectWithValue(error.message);
+      }
     }
   }
 );
@@ -166,48 +73,16 @@ export const updateHabitAsync = createAsyncThunk(
   async ({ habitId, habitData }: { habitId: string; habitData: Habit }, { getState, dispatch, rejectWithValue }) => {
     let token = (getState() as RootState).user.token;
 
-    console.log("Data being sent:", habitData);
-
-    if (!token) {
-      const user = auth.currentUser;
-      if (user) {
-        try {
-          token = await user.getIdToken(true);
-          console.log("Refreshed Firebase token:", token);
-        } catch (error) {
-          console.error("Failed to refresh token:", error);
-          return rejectWithValue("No token available or failed to refresh token.");
-        }
-      }
-    }
-
-    if (!token) {
-      throw new Error("No token available");
-    }
-
     try {
-      const response = await fetch(`${API_BASE_URL}/api/habits/${habitId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(habitData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        dispatch(updateHabit(data.data));
-        toast.success("Habit updated successfully!");
-        return data.data;
-      } else {
-        throw new Error(data.message || 'Failed to update habit');
-      }
+      const data = await fetchWithAuth(`${API_BASE_URL}/api/habits/${habitId}`, 'PUT', token, habitData);
+      dispatch(updateHabit(data.data));
+      toast.success("Habit updated successfully!");
+      return data.data;
     } catch (error) {
-      toast.error("There was an error updating the habit.");
-      console.error('Error updating habit:', error);
-      throw error;
+      if(error instanceof Error) {
+        toast.error("There was an error updating the habit.");
+        return rejectWithValue(error.message);
+      }
     }
   }
 );

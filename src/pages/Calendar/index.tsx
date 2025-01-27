@@ -166,8 +166,6 @@ const CalendarPage = () => {
       };
     }
 
-    console.log(habitToCreate);
-
     try {
       await dispatch(createHabit(habitToCreate));
       closeFormModal();
@@ -217,12 +215,14 @@ const CalendarPage = () => {
 
   const handleEventMount = (info: EventMountArg) => {
     const currentDate = new Date();
-    const eventDate = new Date(info.event.start!);
+    const eventDate = info.event.start ? new Date(info.event.start) : null;
     const category = info.event.extendedProps?.category;
     const color = categoryColors[category];
 
-    if (eventDate < currentDate) {
+    if(eventDate) {
+      if (eventDate < currentDate) {
       info.el.classList.add("opacity-50");
+    }
     }
 
     info.el.style.backgroundColor = color;

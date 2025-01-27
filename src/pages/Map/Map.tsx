@@ -78,7 +78,7 @@ const MapComponent = ({
 
       {singleLocation ? (
         <Marker
-          position={singleLocation.position as LatLngTuple}
+          position={singleLocation.position}
           icon={mapIcons[singleLocation.category as LocationCategories]}
         >
           <Popup>
@@ -101,10 +101,10 @@ const MapComponent = ({
               selectedCategories.length === 0 ||
               selectedCategories.includes(place.category as LocationCategories)
           )
-          .map((place, index) => (
+          .map((place) => (
             <Marker
-              key={index}
-              position={place.position as LatLngTuple}
+              key={place._id}
+              position={place.position}
               icon={mapIcons[place.category as LocationCategories]}
             >
               <Popup>

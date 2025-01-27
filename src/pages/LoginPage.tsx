@@ -1,7 +1,6 @@
 import Button from "../components/ui/Button";
 import logo from "../assets/logo.png";
 import { Link, useLocation, useNavigate } from "react-router";
-import { FcGoogle } from "react-icons/fc";
 import { FormEvent, useEffect, useState } from "react";
 import { loginUser, loginUserWithGoogle } from "../redux/authActions";
 import { useDispatch, useSelector } from "react-redux";
@@ -9,6 +8,8 @@ import { AppDispatch, RootState } from "../redux/store";
 import { setError } from "../redux/authSlice";
 import ErrorMessage from "../components/ui/ErrorMessage";
 import { useTypedSelector } from "./Calendar";
+import InputField from "../components/ui/InputField";
+import GoogleButton from "../components/ui/GoogleButton";
 
 const LoginPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -64,19 +65,17 @@ const LoginPage = () => {
           Login to your account to see your wellness habits routine.
         </p>
         <div className="flex flex-col gap-5 py-10">
-          <input
-            className="border p-3 rounded focus:outline-none focus:border-2 focus:border-sky-500"
+        <InputField
             type="email"
             placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
             value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
-          <input
-            className="border p-3 rounded focus:outline-none focus:border-2 focus:border-sky-500"
+          <InputField
             type="password"
             placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
             value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <Button
@@ -87,14 +86,7 @@ const LoginPage = () => {
         >
           Login
         </Button>
-        <button
-          type="button"
-          onClick={handleGoogleSignIn}
-          className="flex items-center justify-start gap-2 my-4 border border-light-grey px-3 py-2 text-sm shadow-sm rounded"
-        >
-          <FcGoogle size={22} />
-          Continue with Google
-        </button>
+        <GoogleButton onClick={handleGoogleSignIn} />
         {error && <ErrorMessage text={error} />}
         <Link className="my-4 text-sky-600 underline" to="/signup">
           Don't have an account?

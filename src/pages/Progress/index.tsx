@@ -42,7 +42,7 @@ const ProgressPage = () => {
     });
 
   const [habitPieCharts, setHabitPieCharts] = useState<
-    { habitName: string; chartData: ChartData<"pie"> }[]
+    { habitId: string, habitName: string; chartData: ChartData<"pie"> }[]
   >([]);
 
   const countHabitsByCategory = (habits: Habit[]) => {
@@ -146,7 +146,7 @@ const ProgressPage = () => {
 
       const habitsLast10Days = categories.map((category) => {
         const categoryData = last10Days.map((date) =>
-          categoryDateCounts[category] && categoryDateCounts[category][date]
+          categoryDateCounts[category]?.[date]
             ? categoryDateCounts[category][date]
             : 0
         );
@@ -191,6 +191,7 @@ const ProgressPage = () => {
       const habitCharts = habits
         .filter((habit) => totalEventsByHabit(habit) > 0)
         .map((habit) => ({
+          habitId: habit._id ? habit._id : crypto.randomUUID(),
           habitName: habit.name,
           chartData: calculatePieChartData(habit),
         }));
@@ -198,11 +199,13 @@ const ProgressPage = () => {
     }
   }, [habits]);
 
+  if(loading) {
+    return <Spinner />
+  }
+
   return (
     <>
-      {loading ? (
-        <Spinner />
-      ) : habits.length > 0 ? (
+      {habits.length > 0 ? (
         <div className="mx-10 grid grid-cols-1 items-center gap-20 my-10 m-auto md:grid-cols-2 md:gap-10 lg:grid-cols-3">
           <ChartComponent
             chartType="pie"
@@ -222,10 +225,10 @@ const ProgressPage = () => {
             subtitle="Total of habits completed by category"
             chartData={totalCompletedHabitsByCategory}
           />
-          {habitPieCharts.map(({ habitName, chartData }, index) => (
+          {habitPieCharts.map(({ habitName, habitId, chartData }) => (
             <ChartComponent
               chartType="pie"
-              key={index}
+              key={habitId}
               title={habitName}
               subtitle={`Progress for ${habitName}`}
               chartData={chartData}

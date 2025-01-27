@@ -2,7 +2,6 @@ import Button from "../components/ui/Button";
 import logo from "../assets/logo.png";
 import { Link, useLocation, useNavigate } from "react-router";
 import { FormEvent, useEffect, useState } from "react";
-import { FcGoogle } from "react-icons/fc";
 import { useDispatch, useSelector } from "react-redux";
 import { setError } from "../redux/authSlice.ts";
 import {
@@ -12,6 +11,8 @@ import {
 } from "../redux/authActions.ts";
 import { AppDispatch, RootState } from "../redux/store.ts";
 import ErrorMessage from "../components/ui/ErrorMessage.tsx";
+import InputField from "../components/ui/InputField";
+import GoogleButton from "../components/ui/GoogleButton";
 
 const SignUpPage = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -69,19 +70,17 @@ const SignUpPage = () => {
           Sign Up to start your wellness habits routine.
         </p>
         <div className="flex flex-col gap-5 py-10">
-          <input
-            className="border p-3 rounded focus:outline-none focus:border-2 focus:border-sky-500"
+        <InputField
             type="email"
             placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
             value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
-          <input
-            className="border p-3 rounded focus:outline-none focus:border-2 focus:border-sky-500"
+          <InputField
             type="password"
             placeholder="Password"
-            onChange={(e) => setPassword(e.target.value)}
             value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
         </div>
         <Button
@@ -92,14 +91,7 @@ const SignUpPage = () => {
         >
           Sign Up
         </Button>
-        <button
-          onClick={handleGoogleSignIn}
-          type="button"
-          className="flex items-center justify-start gap-2 my-4 border border-light-grey px-3 py-2 text-sm shadow-sm rounded"
-        >
-          <FcGoogle size={22} />
-          Continue with Google
-        </button>
+        <GoogleButton onClick={handleGoogleSignIn} />
         <Link className="my-4 text-sky-600 underline" to="/login">
           Already have an account?
         </Link>

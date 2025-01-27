@@ -27,7 +27,7 @@ const HabitDetails = ({
     useState<HabitDetailsInterface>(habit);
   const [isConfirmDeleteModalOpen, setIsConfirmDeleteModalOpen] = useState(false);
   const { categories, frequencies } = useHabitOptions();
-  const { formErrors, validateForm } = useFormValidation(updatedHabit, false);
+  const { formErrors, validateForm, handleTouch } = useFormValidation(updatedHabit, false);
   const { _id, eventDate } = habit;
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -43,6 +43,7 @@ const HabitDetails = ({
       ...prevHabit,
       [name]: value,
     }));
+    handleTouch(name);
     validateForm();
   };
 
@@ -75,7 +76,7 @@ const HabitDetails = ({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!validateForm()) {
+    if (!validateForm(true)) {
       console.log("Invalid form");
       return;
     }

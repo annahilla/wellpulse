@@ -33,7 +33,7 @@ const AddHabitForm = ({
   handleInputChange,
 }: AddHabitFormProps) => {
   const { categories, frequencies } = useHabitOptions();
-  const { formErrors, validateForm } = useFormValidation(newHabit, isHome);
+  const { formErrors, validateForm, handleTouch } = useFormValidation(newHabit, isHome);
   const error = useSelector((state: RootState) => state.habits.error);
   const date = newHabit.date.split("T")[0];
 
@@ -44,14 +44,16 @@ const AddHabitForm = ({
   const handleOnChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
+    const { name } = event.target;
     handleInputChange(event);
+    handleTouch(name);
     validateForm();
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!validateForm()) {
+    if (!validateForm(true)) {
       return;
     }
 
